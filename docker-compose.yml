@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  app:
+    container_name: loyalty-card-api
+    image: app-springboot-postgresql
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dbpostgresql
+  dbpostgresql:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=wallet_user
+      - POSTGRES_DB=wallet_db
