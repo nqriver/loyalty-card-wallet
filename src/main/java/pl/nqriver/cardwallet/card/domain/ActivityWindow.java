@@ -9,14 +9,15 @@ public class ActivityWindow {
 
     private List<Activity> activities;
 
+
     public Points calculateBalance(LoyaltyCardId id) {
         Points incomeBalance = activities.stream()
-                .filter(e -> ActivityType.INCOMING.equals(e.getActivityType()))
+                .filter(e -> ActivityType.INCOMING.equals(e.getTypeOfActivity()))
                 .map(Activity::getPoints)
                 .reduce(Points.ZERO, Points::add);
 
         Points outgoingBalance = activities.stream()
-                .filter(e -> ActivityType.OUTGOING.equals(e.getActivityType()))
+                .filter(e -> ActivityType.OUTGOING.equals(e.getTypeOfActivity()))
                 .map(Activity::getPoints)
                 .reduce(Points.ZERO, Points::add);
 

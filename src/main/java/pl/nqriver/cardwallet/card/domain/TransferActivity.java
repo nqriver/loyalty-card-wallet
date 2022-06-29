@@ -1,26 +1,33 @@
 package pl.nqriver.cardwallet.card.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
 public class TransferActivity extends Activity {
 
-    @Builder
-    protected TransferActivity(
-            @NonNull ActivityType activityType,
-            LoyaltyCard.@NonNull LoyaltyCardId ownerCardId,
-            LoyaltyCard.@NonNull LoyaltyCardId sourceCardId,
-            LoyaltyCard.@NonNull LoyaltyCardId targetCardId,
-            @NonNull LocalDateTime timestamp,
-            @NonNull Points points) {
+    @Getter
+    @NonNull
+    private final LoyaltyCard.LoyaltyCardId targetCardId;
 
-        super(activityType,
-                ownerCardId,
-                sourceCardId,
-                targetCardId,
-                timestamp,
-                points);
+    @Getter
+    @NonNull
+    private final LoyaltyCard.LoyaltyCardId sourceCardId;
+
+    @Builder
+    public TransferActivity(@NonNull LocalDateTime timestamp,
+                            LoyaltyCard.@NonNull LoyaltyCardId ownerCardId,
+                            @NonNull Points points, LoyaltyCard.LoyaltyCardId targetCardId, LoyaltyCard.LoyaltyCardId sourceCardId) {
+        super(timestamp, ownerCardId, points);
+        this.targetCardId = targetCardId;
+        this.sourceCardId = sourceCardId;
+    }
+
+    @Override
+    public ActivityType getTypeOfActivity() {
+        return this.getSourceCardId()
+                .equals(this.getOwnerCardId()) ? ActivityType.OUTGOING : ActivityType.INCOMING;
     }
 }

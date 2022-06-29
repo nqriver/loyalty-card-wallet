@@ -1,4 +1,4 @@
-package pl.nqriver.cardwallet.configurations;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
