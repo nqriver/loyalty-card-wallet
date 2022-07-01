@@ -33,6 +33,10 @@ public class ActivityWindow {
         this.activities = activities;
     }
 
+    public static ActivityWindow of(List<Activity> activities) {
+        return new ActivityWindow(activities);
+    }
+
     public List<Activity> getActivities() {
         return Collections.unmodifiableList(activities);
     }
