@@ -9,14 +9,15 @@ public class DepositActivity extends Activity {
 
 
     @Builder
-    public DepositActivity(@NonNull LocalDateTime timestamp,
+    public DepositActivity(ActivityId id,
+                           @NonNull LocalDateTime timestamp,
                            LoyaltyCard.@NonNull LoyaltyCardId ownerCardId,
                            @NonNull Points points) {
-        super(timestamp, ownerCardId, points);
+        super(id, timestamp, ownerCardId, ownerCardId, null, points);
     }
 
     @Override
-    protected ActivityType getTypeOfActivity() {
+    public ActivityType getTypeOfActivity() {
         return ActivityType.INCOMING;
     }
 }

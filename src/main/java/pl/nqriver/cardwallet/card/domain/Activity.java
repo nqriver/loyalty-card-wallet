@@ -3,11 +3,14 @@ package pl.nqriver.cardwallet.card.domain;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
+import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
 import java.time.LocalDateTime;
 
+
 public abstract class Activity {
 
+    @Getter
     private ActivityId id;
 
     @Getter
@@ -16,18 +19,29 @@ public abstract class Activity {
 
     @Getter
     @NonNull
-    private final LoyaltyCard.LoyaltyCardId ownerCardId;
+    private final LoyaltyCardId ownerCardId;
+
+    @Getter
+    private final LoyaltyCardId targetCardId;
+
+    @Getter
+    private final LoyaltyCardId sourceCardId;
 
     @Getter
     @NonNull
     private final Points points;
 
-    protected abstract ActivityType getTypeOfActivity();
+    public abstract ActivityType getTypeOfActivity();
 
-    public Activity(@NonNull LocalDateTime timestamp,
-                    @NonNull LoyaltyCard.LoyaltyCardId ownerCardId,
+    protected Activity(ActivityId id,
+                    @NonNull LocalDateTime timestamp,
+                    @NonNull LoyaltyCardId ownerCardId,
+                    LoyaltyCardId targetCardId,
+                    LoyaltyCardId sourceCardId,
                     @NonNull Points points) {
-        this.id = null;
+        this.id = id;
+        this.targetCardId = targetCardId;
+        this.sourceCardId = sourceCardId;
         this.timestamp = timestamp;
         this.ownerCardId = ownerCardId;
         this.points = points;
@@ -35,6 +49,10 @@ public abstract class Activity {
 
     @Value
     public static class ActivityId {
-        Long value;
+        private final Long value;
+
+        public static ActivityId of(Long value) {
+            return new ActivityId(value);
+        }
     }
 }

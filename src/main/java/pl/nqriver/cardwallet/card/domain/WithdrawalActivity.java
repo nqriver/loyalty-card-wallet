@@ -8,14 +8,16 @@ import java.time.LocalDateTime;
 public class WithdrawalActivity extends Activity {
 
     @Builder
-    public WithdrawalActivity(@NonNull LocalDateTime timestamp,
-                              LoyaltyCard.@NonNull LoyaltyCardId ownerCardId,
-                              @NonNull Points points) {
-        super(timestamp, ownerCardId, points);
+    public WithdrawalActivity(
+            ActivityId id,
+            @NonNull LocalDateTime timestamp,
+            LoyaltyCard.@NonNull LoyaltyCardId ownerCardId,
+            @NonNull Points points) {
+        super(id, timestamp, ownerCardId, null, ownerCardId, points);
     }
 
     @Override
-    protected ActivityType getTypeOfActivity() {
+    public ActivityType getTypeOfActivity() {
         return ActivityType.OUTGOING;
     }
 }

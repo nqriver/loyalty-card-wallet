@@ -30,7 +30,7 @@ public class LoyaltyCard {
         return new LoyaltyCard(null, baselinePoints, window);
     }
 
-    Optional<LoyaltyCardId> getId() {
+    public Optional<LoyaltyCardId> getId() {
         return Optional.ofNullable(this.id);
     }
 
@@ -99,8 +99,17 @@ public class LoyaltyCard {
         return this.calculateBalance().isGreaterThanOrEqualTo(points);
     }
 
+    public ActivityWindow getActivityWindow() {
+        return activityWindow;
+    }
+
+
     @Value
     public static class LoyaltyCardId {
-        Long value;
+        private final Long value;
+
+        public static LoyaltyCardId of(Long value) {
+            return new LoyaltyCardId(value);
+        }
     }
 }
