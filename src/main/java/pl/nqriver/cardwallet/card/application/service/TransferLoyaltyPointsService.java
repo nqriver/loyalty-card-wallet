@@ -1,6 +1,7 @@
 package pl.nqriver.cardwallet.card.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsCommand;
 import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsUseCase;
 import pl.nqriver.cardwallet.card.application.ports.output.LoadLoyaltyCardPort;
@@ -12,6 +13,7 @@ import pl.nqriver.cardwallet.card.domain.Points;
 import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
+@Component
 public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCase {
 
     private final LoadLoyaltyCardPort loadLoyaltyCardPort;
@@ -30,7 +32,9 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
         LoyaltyCardId targetCardId = targetCard.getId().orElseThrow(() -> new IllegalStateException("Target card ID is empty"));
 
         Points transferPoints = command.getPoints();
-        if (!sourceCard.withdraw(transferPoints, targetCardId)) {
+
+        boolean withdrawalSuccess = sourceCard.withdraw(transferPoints, targetCardId);
+        if (!withdrawalSuccess) {
             throw new InsufficientCardBalanceException();
         }
         targetCard.deposit(transferPoints, sourceCardId);
