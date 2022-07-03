@@ -55,12 +55,12 @@ public class LoyaltyCardPersistenceAdapter implements LoadLoyaltyCardPort, Updat
     @Override
     public void updateActivities(LoyaltyCard loyaltyCard) {
 
-        for (Activity activity : loyaltyCard.getActivityWindow()
-                .getActivities()) {
-            if (Objects.isNull(activity.getId())) {
-                activityRepository.save(activityMapper.mapDomainObjectToActivityEntity(activity));
-            }
-        }
+        loyaltyCard.getActivityWindow()
+                .getActivities()
+                .stream()
+                .filter(activity -> Objects.isNull(activity.getId()))
+                .map(activityMapper::mapDomainObjectToActivityEntity)
+                .forEach(activityRepository::save);
 
     }
 
