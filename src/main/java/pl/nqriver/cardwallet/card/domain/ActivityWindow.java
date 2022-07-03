@@ -2,15 +2,17 @@ package pl.nqriver.cardwallet.card.domain;
 
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ActivityWindow {
 
-    private List<Activity> activities;
+    private final List<Activity> activities;
 
 
-    public Points calculateBalance(LoyaltyCardId id) {
+    public Points calculateBalance() {
         Points incomeBalance = activities.stream()
                 .filter(e -> ActivityType.INCOMING.equals(e.getTypeOfActivity()))
                 .map(Activity::getPoints)
@@ -22,6 +24,21 @@ public class ActivityWindow {
                 .reduce(Points.ZERO, Points::add);
 
         return Points.add(incomeBalance, outgoingBalance.negate());
+
+    }
+
+    public LocalDateTime getTimestampOfFirstActivity() {
+        return activities.stream()
+                .min(Comparator.comparing(Activity::getTimestamp))
+                .orElseThrow(IllegalStateException::new)
+                .getTimestamp();
+    }
+
+    public LocalDateTime getTimestampOfLastActivity() {
+        return activities.stream()
+                .max(Comparator.comparing(Activity::getTimestamp))
+                .orElseThrow(IllegalStateException::new)
+                .getTimestamp();
 
     }
 
