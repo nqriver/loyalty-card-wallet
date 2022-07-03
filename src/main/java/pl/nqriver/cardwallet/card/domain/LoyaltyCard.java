@@ -36,7 +36,7 @@ public class LoyaltyCard {
 
 
     public Points calculateBalance() {
-        return Points.add(activityWindow.calculateBalance(this.id), baselinePoints);
+        return Points.add(activityWindow.calculateBalance(), baselinePoints);
     }
 
 
@@ -107,7 +107,6 @@ public class LoyaltyCard {
     @Value
     public static class LoyaltyCardId {
         private final Long value;
-
         public static LoyaltyCardId of(Long value) {
             return new LoyaltyCardId(value);
         }
