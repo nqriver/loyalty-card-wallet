@@ -5,8 +5,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsCommand;
-import pl.nqriver.cardwallet.card.application.ports.output.LoadLoyaltyCardPort;
-import pl.nqriver.cardwallet.card.application.ports.output.UpdateLoyaltyCardStatePort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.domain.Points;
@@ -24,12 +24,12 @@ class TransferLoyaltyPointsServiceTest {
 
     public static final Points POINTS = Points.of(1);
 
-    private final LoadLoyaltyCardPort loadLoyaltyCardPort = Mockito.mock(LoadLoyaltyCardPort.class);
+    private final LoyaltyCardPort loadLoyaltyCardPort = Mockito.mock(LoyaltyCardPort.class);
 
-    private final UpdateLoyaltyCardStatePort updateLoyaltyCardStatePort = Mockito.mock(UpdateLoyaltyCardStatePort.class);
+    private final LoyaltyCardActivitiesPort loyaltyCardActivitiesPort = Mockito.mock(LoyaltyCardActivitiesPort.class);
 
     private final TransferLoyaltyPointsService transferLoyaltyPointsService
-            = new TransferLoyaltyPointsService(loadLoyaltyCardPort, updateLoyaltyCardStatePort);
+            = new TransferLoyaltyPointsService(loadLoyaltyCardPort, loyaltyCardActivitiesPort);
 
     @Test
     void transferFails() {
@@ -95,7 +95,7 @@ class TransferLoyaltyPointsServiceTest {
 
     private void thenExpectCardActivitiesBeingUpdated(LoyaltyCardId... loyaltyCardIds) {
         ArgumentCaptor<LoyaltyCard> cardArgumentCaptor = ArgumentCaptor.forClass(LoyaltyCard.class);
-        then(updateLoyaltyCardStatePort).should(times(loyaltyCardIds.length))
+        then(loyaltyCardActivitiesPort).should(times(loyaltyCardIds.length))
                 .updateActivities(cardArgumentCaptor.capture());
 
         List<LoyaltyCardId> updatedCardsIds = cardArgumentCaptor.getAllValues()

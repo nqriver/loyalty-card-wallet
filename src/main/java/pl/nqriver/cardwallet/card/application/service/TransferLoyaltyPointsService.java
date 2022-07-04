@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsCommand;
 import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsUseCase;
-import pl.nqriver.cardwallet.card.application.ports.output.LoadLoyaltyCardPort;
-import pl.nqriver.cardwallet.card.application.ports.output.UpdateLoyaltyCardStatePort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.domain.Points;
@@ -16,8 +16,8 @@ import javax.transaction.Transactional;
 @Component
 public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCase {
 
-    private final LoadLoyaltyCardPort loadLoyaltyCardPort;
-    private final UpdateLoyaltyCardStatePort updateLoyaltyCardStatePort;
+    private final LoyaltyCardPort loadLoyaltyCardPort;
+    private final LoyaltyCardActivitiesPort loyaltyCardActivitiesPort;
 
 
     @Transactional
@@ -39,7 +39,7 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
         }
         targetCard.deposit(transferPoints, sourceCardId);
 
-        updateLoyaltyCardStatePort.updateActivities(sourceCard);
-        updateLoyaltyCardStatePort.updateActivities(targetCard);
+        loyaltyCardActivitiesPort.updateActivities(sourceCard);
+        loyaltyCardActivitiesPort.updateActivities(targetCard);
     }
 }

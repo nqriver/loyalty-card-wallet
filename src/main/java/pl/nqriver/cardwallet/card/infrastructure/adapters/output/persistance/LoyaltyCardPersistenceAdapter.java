@@ -2,12 +2,9 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.application.ports.output.CreateLoyaltyCardPort;
-import pl.nqriver.cardwallet.card.application.ports.output.LoadLoyaltyCardPort;
-import pl.nqriver.cardwallet.card.application.ports.output.UpdateLoyaltyCardStatePort;
-import pl.nqriver.cardwallet.card.domain.Activity;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
-import pl.nqriver.cardwallet.card.domain.Points;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.mapper.ActivityMapper;
@@ -21,7 +18,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
-public class LoyaltyCardPersistenceAdapter implements LoadLoyaltyCardPort, UpdateLoyaltyCardStatePort, CreateLoyaltyCardPort {
+public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActivitiesPort {
 
     private final LoyaltyCardRepository loyaltyCardRepository;
     private final ActivityRepository activityRepository;

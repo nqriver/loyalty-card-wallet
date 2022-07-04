@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.GetCardActivityWindowQuery;
 import pl.nqriver.cardwallet.card.application.ports.input.GetCardBalanceQuery;
-import pl.nqriver.cardwallet.card.application.ports.output.LoadLoyaltyCardPort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.Activity;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.Points;
@@ -17,7 +17,7 @@ import java.util.List;
 public class GetLoyaltyCardBalanceService
         implements GetCardBalanceQuery, GetCardActivityWindowQuery {
 
-    private final LoadLoyaltyCardPort loadLoyaltyCardPort;
+    private final LoyaltyCardPort loadLoyaltyCardPort;
 
 
     @Override
