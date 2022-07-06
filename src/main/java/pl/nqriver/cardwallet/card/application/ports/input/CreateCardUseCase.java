@@ -1,5 +1,6 @@
 package pl.nqriver.cardwallet.card.application.ports.input;
 
+import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 
 public interface CreateCardUseCase {

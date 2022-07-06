@@ -1,4 +1,4 @@
-package pl.nqriver.cardwallet.card.application.ports.input;
+package pl.nqriver.cardwallet.card.application.ports.input.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

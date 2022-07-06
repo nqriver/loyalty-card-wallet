@@ -5,7 +5,7 @@ import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.domain.Points;
 
 public interface GetCardBalanceQuery {
-    Points getCardBalance(LoyaltyCardId id);
+    Balance getCardBalance(LoyaltyCardId id);
 
     Balance getCardBalanceDetails(LoyaltyCardId id);
 }
