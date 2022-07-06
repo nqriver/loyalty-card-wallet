@@ -3,12 +3,13 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.ma
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.domain.ActivityWindow;
+import pl.nqriver.cardwallet.card.domain.Holder;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
+import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.domain.Points;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,21 +24,26 @@ public class LoyaltyCardMapper {
             Long withdrawalBalance,
             Long depositBalance
     ) {
-//        Points baselinePoints = Points.subtract(Points.of(depositBalance), Points.of(withdrawalBalance));
-        Points baselinePoints = Points.of(0);
+        Points baselinePoints = Points.subtract(Points.of(depositBalance), Points.of(withdrawalBalance));
         return LoyaltyCard.withId(
-                new LoyaltyCard.LoyaltyCardId(loyaltyCardEntity.getId()),
+                new LoyaltyCardId(loyaltyCardEntity.getId()),
                 baselinePoints,
-                activityMapper.mapToActivityWindow(activities)
+                activityMapper.mapToActivityWindow(activities),
+                Holder.of(loyaltyCardEntity.getHolderEmail()),
+                loyaltyCardEntity.getCreatedAt(),
+                loyaltyCardEntity.getExpiresAt()
         );
     }
 
     public LoyaltyCard mapToDomainObject(LoyaltyCardEntity loyaltyCardEntity) {
         Points baselinePoints = Points.of(0);
         return LoyaltyCard.withId(
-                new LoyaltyCard.LoyaltyCardId(loyaltyCardEntity.getId()),
+                LoyaltyCardId.of(loyaltyCardEntity.getId()),
                 baselinePoints,
-                new ActivityWindow(new ArrayList<>())
+                ActivityWindow.emptyWindow(),
+                Holder.of(loyaltyCardEntity.getHolderEmail()),
+                loyaltyCardEntity.getCreatedAt(),
+                loyaltyCardEntity.getExpiresAt()
         );
     }
 

@@ -2,6 +2,7 @@ package pl.nqriver.cardwallet.card.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.*;
@@ -84,7 +85,10 @@ class LoyaltyCardTest {
         LoyaltyCard loyaltyCard = LoyaltyCard.withId(
                 cardId,
                 INITIAL_POINTS,
-                new ActivityWindow(new ArrayList<>())
+                ActivityWindow.emptyWindow(),
+                Holder.of("someholderemail@test.com"),
+                LocalDateTime.now(),
+                LocalDateTime.now().plusYears(2)
         );
         return loyaltyCard;
     }

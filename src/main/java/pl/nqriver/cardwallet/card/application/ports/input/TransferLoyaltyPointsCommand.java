@@ -2,11 +2,10 @@ package pl.nqriver.cardwallet.card.application.ports.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 import pl.nqriver.cardwallet.card.domain.Points;
 
-import static pl.nqriver.cardwallet.card.domain.LoyaltyCard.*;
+import static pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
 @Value
 @Builder

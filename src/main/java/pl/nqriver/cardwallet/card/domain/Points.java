@@ -41,6 +41,10 @@ public class Points {
         return new Points(BigInteger.valueOf(value));
     }
 
+    public static Points of(BigInteger value) {
+        return new Points(value);
+    }
+
     public static Points add(Points a, Points b) {
         return new Points(a.amount.add(b.amount));
     }

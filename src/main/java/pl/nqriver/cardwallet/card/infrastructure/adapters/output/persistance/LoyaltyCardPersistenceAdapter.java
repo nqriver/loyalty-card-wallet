@@ -2,8 +2,9 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
+import pl.nqriver.cardwallet.card.application.ports.input.CreateCardCommand;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
+import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
@@ -13,6 +14,7 @@ import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.rep
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.repository.LoyaltyCardRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +47,13 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
                 pointsDepositBalance);
     }
 
+    @Override
+    public LoyaltyCard loadLoyaltyCardGeneralInfo(LoyaltyCard.LoyaltyCardId id) {
+        Long cardId = id.getValue();
+        LoyaltyCardEntity entity = loyaltyCardRepository.findById(cardId).orElseThrow(EntityNotFoundException::new);
+        return loyaltyCardMapper.mapToDomainObject(entity);
+    }
+
     private Long getValueElseZero(Long pointsWithdrawalBalance) {
         return Objects.isNull(pointsWithdrawalBalance) ? 0L : pointsWithdrawalBalance;
     }
@@ -62,9 +71,15 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
     }
 
     @Override
-    public LoyaltyCard createLoyaltyCard() {
+    public LoyaltyCard createLoyaltyCard(CreateCardCommand command,
+                                         LocalDateTime createdAt,
+                                         LocalDateTime expiresAt) {
+        LoyaltyCardEntity entity = new LoyaltyCardEntity();
+        entity.setCreatedAt(createdAt);
+        entity.setExpiresAt(expiresAt);
+        entity.setHolderEmail(command.getHolderEmail());
         return loyaltyCardMapper.mapToDomainObject(
-                loyaltyCardRepository.save(new LoyaltyCardEntity()));
+                loyaltyCardRepository.save(entity));
     }
 
 }

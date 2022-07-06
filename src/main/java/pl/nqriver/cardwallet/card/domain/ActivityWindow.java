@@ -1,8 +1,7 @@
 package pl.nqriver.cardwallet.card.domain;
 
-import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,18 +12,24 @@ public class ActivityWindow {
 
 
     public Points calculateBalance() {
-        Points incomeBalance = activities.stream()
-                .filter(e -> ActivityType.INCOMING.equals(e.getTypeOfActivity()))
-                .map(Activity::getPoints)
-                .reduce(Points.ZERO, Points::add);
-
-        Points outgoingBalance = activities.stream()
-                .filter(e -> ActivityType.OUTGOING.equals(e.getTypeOfActivity()))
-                .map(Activity::getPoints)
-                .reduce(Points.ZERO, Points::add);
-
+        Points incomeBalance = calculateDepositBalance();
+        Points outgoingBalance = calculateWithdrawalBalance();
         return Points.add(incomeBalance, outgoingBalance.negate());
+    }
 
+    public Points calculateWithdrawalBalance() {
+        return getBalanceOfActivityType(ActivityType.OUTGOING);
+    }
+
+    public Points calculateDepositBalance() {
+        return getBalanceOfActivityType(ActivityType.INCOMING);
+    }
+
+    private Points getBalanceOfActivityType(ActivityType type) {
+        return activities.stream()
+                .filter(e -> type.equals(e.getTypeOfActivity()))
+                .map(Activity::getPoints)
+                .reduce(Points.ZERO, Points::add);
     }
 
     public LocalDateTime getTimestampOfFirstActivity() {
@@ -48,6 +53,10 @@ public class ActivityWindow {
 
     public ActivityWindow(List<Activity> activities) {
         this.activities = activities;
+    }
+
+    public static ActivityWindow emptyWindow() {
+        return new ActivityWindow(new ArrayList<>());
     }
 
     public static ActivityWindow of(List<Activity> activities) {

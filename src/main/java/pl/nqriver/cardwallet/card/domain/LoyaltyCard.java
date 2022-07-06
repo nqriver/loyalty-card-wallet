@@ -1,9 +1,6 @@
 package pl.nqriver.cardwallet.card.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -13,21 +10,41 @@ import java.util.Optional;
 public class LoyaltyCard {
 
     private final LoyaltyCardId id;
+
     private final Points baselinePoints;
+
     private final ActivityWindow activityWindow;
+
+    private final Holder holder;
+
+    @Getter
+    private final LocalDateTime createdAt;
+
+    @Getter
+    private final LocalDateTime expiresAt;
 
     /**
      * Static factory method to create a {@link LoyaltyCard} entity with an id.
      */
-    public static LoyaltyCard withId(LoyaltyCardId id, Points baselinePoints, ActivityWindow window) {
-        return new LoyaltyCard(id, baselinePoints, window);
+    public static LoyaltyCard withId(LoyaltyCardId id,
+                                     Points baselinePoints,
+                                     ActivityWindow window,
+                                     Holder holder,
+                                     LocalDateTime createdAt,
+                                     LocalDateTime expiresAt
+    ) {
+        return new LoyaltyCard(id, baselinePoints, window, holder, createdAt, expiresAt);
     }
 
     /**
      * Static factory method to create a {@link LoyaltyCard} entity without an id. Used when entity is not yet persisted
      */
-    public static LoyaltyCard withoutId(Points baselinePoints, ActivityWindow window) {
-        return new LoyaltyCard(null, baselinePoints, window);
+    public static LoyaltyCard withoutId(Points baselinePoints,
+                                        ActivityWindow window,
+                                        Holder holder,
+                                        LocalDateTime createdAt,
+                                        LocalDateTime expiresAt) {
+        return new LoyaltyCard(null, baselinePoints, window, holder, createdAt, expiresAt);
     }
 
     public Optional<LoyaltyCardId> getId() {
@@ -103,6 +120,10 @@ public class LoyaltyCard {
         return activityWindow;
     }
 
+
+    public String getHolderEmail() {
+        return holder.getEmail();
+    }
 
     @Value
     public static class LoyaltyCardId {

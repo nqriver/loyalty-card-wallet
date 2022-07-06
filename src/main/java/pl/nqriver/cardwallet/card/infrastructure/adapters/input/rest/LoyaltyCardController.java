@@ -3,29 +3,37 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pl.nqriver.cardwallet.card.application.ports.input.CreateCardUseCase;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardBalanceQuery;
-import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
+import org.springframework.web.bind.annotation.*;
+import pl.nqriver.cardwallet.card.domain.Points;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request.CreateLoyaltyCardRequest;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.BalanceDetailsResponse;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.LoyaltyCardResponse;
 
 @RestController
+@RequestMapping("cards")
 @RequiredArgsConstructor
 public class LoyaltyCardController {
 
-    private final GetCardBalanceQuery getCardBalanceQuery;
-    private final CreateCardUseCase createCardUseCase;
+    private final LoyaltyCardFacade facade;
 
-    @GetMapping("card/{id}/balance")
-    ResponseEntity<Object> getPointsBalance(@PathVariable("id") Long loyaltyCardId) {
-        return ResponseEntity.ok(getCardBalanceQuery.getCardBalance(new LoyaltyCardId(loyaltyCardId)));
+    @GetMapping("/{id}/balance")
+    ResponseEntity<Points> getPointsBalance(@PathVariable("id") Long loyaltyCardId) {
+        return ResponseEntity.ok(facade.getBalance(loyaltyCardId));
     }
 
-    @PostMapping("card")
-    ResponseEntity<Object> setUpLoyaltyCard() {
-        return ResponseEntity.status(HttpStatus.CREATED).body(createCardUseCase.setUpNewLoyaltyCard());
+    @GetMapping("/{id}/balance/details")
+    ResponseEntity<BalanceDetailsResponse> getPointsBalanceDetails(@PathVariable("id") Long loyaltyCardId) {
+        return ResponseEntity.ok(facade.getBalanceDetails(loyaltyCardId));
     }
 
+    @PostMapping("")
+    ResponseEntity<LoyaltyCardResponse> setUpLoyaltyCard(@RequestBody final CreateLoyaltyCardRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(facade.create(request));
+    }
+
+    @GetMapping("/{id}")
+    ResponseEntity<LoyaltyCardResponse> getGeneralInfo(@PathVariable("id") Long loyaltyCardId) {
+        return ResponseEntity.ok(facade.getGeneralInfo(loyaltyCardId));
+    }
 }
