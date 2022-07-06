@@ -2,7 +2,7 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.application.ports.input.CreateCardCommand;
+import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
@@ -41,7 +41,7 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
         Long pointsWithdrawalBalance = getValueElseZero(
                 activityRepository.getPointsWithdrawalBalance(loyaltyCardId));
 
-        return loyaltyCardMapper.mapToDomainObject(loyaltyCardEntity,
+        return loyaltyCardMapper.mapToDomainObjectWithActivities(loyaltyCardEntity,
                 activities,
                 pointsWithdrawalBalance,
                 pointsDepositBalance);
@@ -51,7 +51,7 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
     public LoyaltyCard loadLoyaltyCardGeneralInfo(LoyaltyCard.LoyaltyCardId id) {
         Long cardId = id.getValue();
         LoyaltyCardEntity entity = loyaltyCardRepository.findById(cardId).orElseThrow(EntityNotFoundException::new);
-        return loyaltyCardMapper.mapToDomainObject(entity);
+        return loyaltyCardMapper.mapToSimplifiedDomainObject(entity);
     }
 
     private Long getValueElseZero(Long pointsWithdrawalBalance) {
@@ -78,7 +78,7 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
         entity.setCreatedAt(createdAt);
         entity.setExpiresAt(expiresAt);
         entity.setHolderEmail(command.getHolderEmail());
-        return loyaltyCardMapper.mapToDomainObject(
+        return loyaltyCardMapper.mapToSimplifiedDomainObject(
                 loyaltyCardRepository.save(entity));
     }
 

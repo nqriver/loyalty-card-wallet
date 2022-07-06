@@ -9,7 +9,6 @@ import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.Activity;
 import pl.nqriver.cardwallet.card.domain.Balance;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
-import pl.nqriver.cardwallet.card.domain.Points;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,9 +23,8 @@ public class LoyaltyCardQueriesService implements GetCardBalanceQuery,
 
 
     @Override
-    public Points getCardBalance(LoyaltyCard.LoyaltyCardId id) {
-        return loadLoyaltyCardPort.loadLoyaltyCard(id)
-                .calculateBalance();
+    public Balance getCardBalance(LoyaltyCard.LoyaltyCardId id) {
+        return Balance.ofTotal(loadLoyaltyCardPort.loadLoyaltyCard(id));
     }
 
     @Override

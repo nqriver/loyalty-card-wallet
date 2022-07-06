@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsCommand;
+import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsCommand;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;

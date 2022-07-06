@@ -18,7 +18,7 @@ public class LoyaltyCardMapper {
 
     private final ActivityMapper activityMapper;
 
-    public LoyaltyCard mapToDomainObject(
+    public LoyaltyCard mapToDomainObjectWithActivities(
             LoyaltyCardEntity loyaltyCardEntity,
             List<ActivityEntity> activities,
             Long withdrawalBalance,
@@ -35,7 +35,7 @@ public class LoyaltyCardMapper {
         );
     }
 
-    public LoyaltyCard mapToDomainObject(LoyaltyCardEntity loyaltyCardEntity) {
+    public LoyaltyCard mapToSimplifiedDomainObject(LoyaltyCardEntity loyaltyCardEntity) {
         Points baselinePoints = Points.of(0);
         return LoyaltyCard.withId(
                 LoyaltyCardId.of(loyaltyCardEntity.getId()),

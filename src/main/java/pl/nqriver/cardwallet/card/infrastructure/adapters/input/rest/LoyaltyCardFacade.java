@@ -6,11 +6,9 @@ import pl.nqriver.cardwallet.card.application.ports.input.CreateCardUseCase;
 import pl.nqriver.cardwallet.card.application.ports.input.GetCardBalanceQuery;
 import pl.nqriver.cardwallet.card.application.ports.input.GetCardGeneralInfoQuery;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
-import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
-import pl.nqriver.cardwallet.card.domain.Points;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.mapper.LoyaltyCardRestMapper;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request.CreateLoyaltyCardRequest;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.BalanceDetailsResponse;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.BalanceResponse;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.LoyaltyCardResponse;
 
 import static pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId.of;
@@ -34,11 +32,11 @@ public class LoyaltyCardFacade {
         return mapper.toLoyaltyCardResponse(getCardGeneralInfoQuery.getCardInfo(of(id)));
     }
 
-    Points getBalance(Long id) {
-        return getCardBalanceQuery.getCardBalance(of(id));
+    BalanceResponse getBalance(final Long id) {
+        return mapper.toBalanceResponse(getCardBalanceQuery.getCardBalance(of(id)));
     }
 
-    public BalanceDetailsResponse getBalanceDetails(Long loyaltyCardId) {
+    public BalanceResponse getBalanceDetails(final Long loyaltyCardId) {
         return mapper.toBalanceResponse(
                 getCardBalanceQuery.getCardBalanceDetails(of(loyaltyCardId))
         );

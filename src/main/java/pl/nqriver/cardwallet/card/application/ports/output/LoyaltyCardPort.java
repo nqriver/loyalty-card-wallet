@@ -1,6 +1,6 @@
 package pl.nqriver.cardwallet.card.application.ports.output;
 
-import pl.nqriver.cardwallet.card.application.ports.input.CreateCardCommand;
+import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 

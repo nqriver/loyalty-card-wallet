@@ -2,7 +2,7 @@ package pl.nqriver.cardwallet.card.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsCommand;
+import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsCommand;
 import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsUseCase;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
