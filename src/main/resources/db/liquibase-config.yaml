@@ -1,5 +1,12 @@
 databaseChangeLog:
   - include:
       file: db/changelog/001-create-loyalty-card-table.sql
+
   - include:
       file: db/changelog/002-create-activities-table.sql
+
+  - include:
+      file: db/changelog/003-add-custom-email-domain.sql
+
+  - include:
+      file: db/changelog/004-update-loyalty-card-table.sql
