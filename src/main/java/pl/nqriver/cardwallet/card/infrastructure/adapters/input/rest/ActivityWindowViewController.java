@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardActivityWindowQuery;
+import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardActivityWindowQuery;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 
 import java.time.LocalDateTime;

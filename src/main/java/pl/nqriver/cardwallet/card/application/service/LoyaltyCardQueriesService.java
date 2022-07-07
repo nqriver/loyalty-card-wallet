@@ -2,9 +2,9 @@ package pl.nqriver.cardwallet.card.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardActivityWindowQuery;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardBalanceQuery;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardGeneralInfoQuery;
+import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardActivityWindowQuery;
+import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardBalanceQuery;
+import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardGeneralInfoQuery;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.Activity;
 import pl.nqriver.cardwallet.card.domain.Balance;
