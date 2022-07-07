@@ -2,9 +2,9 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.application.ports.input.CreateCardUseCase;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardBalanceQuery;
-import pl.nqriver.cardwallet.card.application.ports.input.GetCardGeneralInfoQuery;
+import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardUseCase;
+import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardBalanceQuery;
+import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardGeneralInfoQuery;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.mapper.LoyaltyCardRestMapper;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request.CreateLoyaltyCardRequest;
@@ -15,7 +15,7 @@ import static pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId.of;
 
 @RequiredArgsConstructor
 @Component
-public class LoyaltyCardFacade {
+class LoyaltyCardFacade {
     private final GetCardBalanceQuery getCardBalanceQuery;
     private final GetCardGeneralInfoQuery getCardGeneralInfoQuery;
     private final CreateCardUseCase createCardUseCase;

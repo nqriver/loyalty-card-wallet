@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsCommand;
-import pl.nqriver.cardwallet.card.application.ports.input.TransferLoyaltyPointsUseCase;
+import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsUseCase;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.domain.Points;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +21,9 @@ public class TransferPointsController {
 
     @PostMapping("/cards/send/{sourceCardId}/{targetCardId}/{points}")
     ResponseEntity<?> transferPoints(
-            @PathVariable("sourceCardId") Long sourceCardId,
-            @PathVariable("targetCardId") Long targetCardId,
-            @PathVariable("points") Long points
+            @PathVariable("sourceCardId") @NotNull Long sourceCardId,
+            @PathVariable("targetCardId") @NotNull Long targetCardId,
+            @PathVariable("points") @Positive Long points
     ) {
 
         TransferLoyaltyPointsCommand command = TransferLoyaltyPointsCommand.builder()
