@@ -10,3 +10,9 @@ databaseChangeLog:
 
   - include:
       file: db/changelog/004-update-loyalty-card-table.sql
+
+  - include:
+      file: db/changelog/005-add-constraints-to-loyalty-card-table.sql
+
+  - include:
+      file: db/changelog/006-add-checks-to-activity-table.sql
