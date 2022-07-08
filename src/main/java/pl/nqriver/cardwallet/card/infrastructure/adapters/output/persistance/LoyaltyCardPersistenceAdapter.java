@@ -8,6 +8,7 @@ import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.exception.ResourceNotFoundException;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.mapper.ActivityMapper;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.mapper.LoyaltyCardMapper;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.repository.ActivityRepository;
@@ -32,7 +33,7 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
         Long loyaltyCardId = id.getValue();
         LoyaltyCardEntity loyaltyCardEntity =
                 loyaltyCardRepository.findById(loyaltyCardId)
-                        .orElseThrow(EntityNotFoundException::new);
+                        .orElseThrow(() -> new ResourceNotFoundException("Cannot find resource of id" + loyaltyCardId));
 
         List<ActivityEntity> activities = activityRepository.findByOwner(loyaltyCardId);
 
@@ -50,7 +51,8 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
     @Override
     public LoyaltyCard loadLoyaltyCardGeneralInfo(LoyaltyCard.LoyaltyCardId id) {
         Long cardId = id.getValue();
-        LoyaltyCardEntity entity = loyaltyCardRepository.findById(cardId).orElseThrow(EntityNotFoundException::new);
+        LoyaltyCardEntity entity = loyaltyCardRepository.findById(cardId).orElseThrow(
+                () -> new ResourceNotFoundException(String.format("%s %d %s", "Resource of id:", cardId, "cannot be found")));
         return loyaltyCardMapper.mapToSimplifiedDomainObject(entity);
     }
 

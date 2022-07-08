@@ -9,6 +9,7 @@ import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
+import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator.OperationValidationResult;
 import pl.nqriver.cardwallet.card.domain.Points;
 
 import java.util.List;
@@ -33,6 +34,7 @@ class TransferLoyaltyPointsServiceTest {
 
     @Test
     void transferFails() {
+        // given
         var firstCardId = givenLoyaltyCardIdOf(1L);
         var secondCardId = givenLoyaltyCardIdOf(2L);
 
@@ -43,15 +45,18 @@ class TransferLoyaltyPointsServiceTest {
 
         TransferLoyaltyPointsCommand command = new TransferLoyaltyPointsCommand(firstCardId, secondCardId, POINTS);
 
+        // when
         assertThatCode(() -> transferLoyaltyPointsService.transferLoyaltyPoints(command))
-                .isInstanceOf(InsufficientCardBalanceException.class);
+                .isInstanceOf(OperationTerminatedWithFailureException.class);
 
-        then(secondLoyaltyCard).should(times(0)).deposit(any(), eq(firstCardId));
+        // then
+        then(secondLoyaltyCard).should(times(0)).transferIn(any(), eq(firstCardId));
 
     }
 
     @Test
     void transferSucceeds() {
+        // given
         var firstCardId = givenLoyaltyCardIdOf(1L);
         var secondCardId = givenLoyaltyCardIdOf(2L);
 
@@ -59,26 +64,39 @@ class TransferLoyaltyPointsServiceTest {
         LoyaltyCard secondLoyaltyCard = givenLoyaltyCardOfId(secondCardId);
 
         givenWithdrawalSuccess(firstLoyaltyCard);
+        givenDepositSuccess(secondLoyaltyCard);
 
         TransferLoyaltyPointsCommand command = new TransferLoyaltyPointsCommand(firstCardId, secondCardId, POINTS);
 
+        // when
         assertThatCode(() -> transferLoyaltyPointsService.transferLoyaltyPoints(command))
                 .doesNotThrowAnyException();
 
-        then(secondLoyaltyCard).should(times(1)).deposit(any(), eq(firstCardId));
-        then(secondLoyaltyCard).should().deposit(eq(POINTS), eq(firstCardId));
+        // then
+        then(secondLoyaltyCard).should().transferIn(eq(POINTS), eq(firstCardId));
+        then(firstLoyaltyCard).should().transferOut(eq(POINTS), eq(secondCardId));
         thenExpectCardActivitiesBeingUpdated(firstCardId, secondCardId);
 
     }
 
     private void givenWithdrawalFail(LoyaltyCard loyaltyCard) {
-        BDDMockito.given(loyaltyCard.withdraw(any(Points.class), any(LoyaltyCardId.class)))
-                .willReturn(false);
+        BDDMockito.given(loyaltyCard.transferOut(any(Points.class), any(LoyaltyCardId.class)))
+                .willReturn(OperationValidationResult.CARD_EXPIRED);
     }
 
     private void givenWithdrawalSuccess(LoyaltyCard loyaltyCard) {
-        BDDMockito.given(loyaltyCard.withdraw(any(Points.class), any(LoyaltyCardId.class)))
-                .willReturn(true);
+        BDDMockito.given(loyaltyCard.transferOut(any(Points.class), any(LoyaltyCardId.class)))
+                .willReturn(OperationValidationResult.SUCCESS);
+    }
+
+    private void givenDepositSuccess(LoyaltyCard loyaltyCard) {
+        BDDMockito.given(loyaltyCard.transferIn(any(Points.class), any(LoyaltyCardId.class)))
+                .willReturn(OperationValidationResult.SUCCESS);
+    }
+
+    private void givenDepositFail(LoyaltyCard loyaltyCard) {
+        BDDMockito.given(loyaltyCard.transferIn(any(Points.class), any(LoyaltyCardId.class)))
+                .willReturn(OperationValidationResult.CARD_EXPIRED);
     }
 
     private LoyaltyCard givenLoyaltyCardOfId(LoyaltyCardId cardId) {

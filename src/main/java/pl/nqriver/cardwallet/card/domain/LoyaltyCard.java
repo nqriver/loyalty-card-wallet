@@ -5,6 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator.*;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 public class LoyaltyCard {
@@ -58,7 +60,8 @@ public class LoyaltyCard {
 
 
     public boolean withdraw(Points points) {
-        if (!mayBeWithdrawn(points)) {
+
+        if (!canBeWithdrawn(points)) {
             return false;
         }
         Activity withdrawal = WithdrawalActivity.builder()
@@ -71,9 +74,14 @@ public class LoyaltyCard {
         return true;
     }
 
-    public boolean withdraw(Points points, LoyaltyCardId targetCardId) {
-        if (!mayBeWithdrawn(points)) {
-            return false;
+    public OperationValidationResult transferOut(Points points, LoyaltyCardId targetCardId) {
+        OperationValidationResult operationResult =
+                isAccountBalanceSufficient(points)
+                        .and(isCardNotExpired())
+                        .apply(this);
+
+        if (operationResult.otherThan(OperationValidationResult.SUCCESS)) {
+            return operationResult;
         }
 
         Activity withdrawal = TransferActivity.builder()
@@ -85,10 +93,16 @@ public class LoyaltyCard {
                 .build();
 
         activityWindow.addActivity(withdrawal);
-        return true;
+        return operationResult;
     }
 
-    public boolean deposit(Points points) {
+    public OperationValidationResult deposit(Points points) {
+        OperationValidationResult operationResult = isCardNotExpired().apply(this);
+
+        if (operationResult.otherThan(OperationValidationResult.SUCCESS)) {
+            return operationResult;
+        }
+
         Activity deposit = DepositActivity.builder()
                 .timestamp(LocalDateTime.now())
                 .ownerCardId(this.id)
@@ -96,10 +110,17 @@ public class LoyaltyCard {
                 .build();
 
         this.activityWindow.addActivity(deposit);
-        return true;
+        return operationResult;
     }
 
-    public boolean deposit(Points points, LoyaltyCardId sourceCardId) {
+    public OperationValidationResult transferIn(Points points, LoyaltyCardId sourceCardId) {
+        OperationValidationResult result =
+                isCardNotExpired().apply(this);
+
+        if (result.otherThan(OperationValidationResult.SUCCESS)) {
+            return result;
+        }
+
         Activity deposit = TransferActivity.builder()
                 .sourceCardId(sourceCardId)
                 .ownerCardId(this.id)
@@ -109,11 +130,15 @@ public class LoyaltyCard {
                 .build();
 
         this.activityWindow.addActivity(deposit);
-        return true;
+        return result;
     }
 
-    private boolean mayBeWithdrawn(Points points) {
+    public boolean canBeWithdrawn(Points points) {
         return this.calculateBalance().isGreaterThanOrEqualTo(points);
+    }
+
+    public boolean isValid() {
+        return this.expiresAt.isAfter(LocalDateTime.now());
     }
 
     public ActivityWindow getActivityWindow() {

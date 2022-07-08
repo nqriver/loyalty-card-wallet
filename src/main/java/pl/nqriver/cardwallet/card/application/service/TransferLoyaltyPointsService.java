@@ -8,6 +8,8 @@ import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
+import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator;
+import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator.OperationValidationResult;
 import pl.nqriver.cardwallet.card.domain.Points;
 
 import javax.transaction.Transactional;
@@ -33,13 +35,19 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
 
         Points transferPoints = command.getPoints();
 
-        boolean withdrawalSuccess = sourceCard.withdraw(transferPoints, targetCardId);
-        if (!withdrawalSuccess) {
-            throw new InsufficientCardBalanceException();
-        }
-        targetCard.deposit(transferPoints, sourceCardId);
+        var withdrawalResult = sourceCard.transferOut(transferPoints, targetCardId);
+        handleOperationResult(withdrawalResult);
+
+        var depositResult = targetCard.transferIn(transferPoints, sourceCardId);
+        handleOperationResult(depositResult);
 
         loyaltyCardActivitiesPort.updateActivities(sourceCard);
         loyaltyCardActivitiesPort.updateActivities(targetCard);
+    }
+
+    private void handleOperationResult(OperationValidationResult operationValidationResult) {
+        if (operationValidationResult.isNotSuccess()) {
+            throw new OperationTerminatedWithFailureException(operationValidationResult.getMessage());
+        }
     }
 }
