@@ -8,6 +8,8 @@ import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request.Cre
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.BalanceResponse;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.LoyaltyCardResponse;
 
+import javax.validation.Valid;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -31,7 +33,7 @@ public class LoyaltyCardController {
     }
 
     @PostMapping("")
-    ResponseEntity<EntityModel<LoyaltyCardResponse>> setUpLoyaltyCard(@RequestBody final CreateLoyaltyCardRequest request) {
+    ResponseEntity<EntityModel<LoyaltyCardResponse>> setUpLoyaltyCard(@RequestBody @Valid final CreateLoyaltyCardRequest request) {
         LoyaltyCardResponse loyaltyCardResponse = facade.create(request);
         return ResponseEntity
                 .created(

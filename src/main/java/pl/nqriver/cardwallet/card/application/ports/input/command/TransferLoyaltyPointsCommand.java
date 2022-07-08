@@ -8,7 +8,6 @@ import pl.nqriver.cardwallet.card.domain.Points;
 import static pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
 @Value
-@Builder
 @AllArgsConstructor
 public class TransferLoyaltyPointsCommand {
 

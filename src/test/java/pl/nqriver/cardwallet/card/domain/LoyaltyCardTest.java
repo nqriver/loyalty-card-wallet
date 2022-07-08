@@ -1,9 +1,9 @@
 package pl.nqriver.cardwallet.card.domain;
 
 import org.junit.jupiter.api.Test;
+import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator.OperationValidationResult;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,11 +32,11 @@ class LoyaltyCardTest {
         LoyaltyCard firstCard = givenLoyaltyCardOfId(firstCardId);
         LoyaltyCard secondCard = givenLoyaltyCardOfId(secondCardId);
 
-        firstCard.deposit(Points.of(12L), secondCardId);
-        secondCard.withdraw(Points.of(12L), firstCardId);
+        firstCard.transferIn(Points.of(12L), secondCardId);
+        secondCard.transferOut(Points.of(12L), firstCardId);
 
-        firstCard.withdraw(Points.of(2L), secondCardId);
-        secondCard.deposit(Points.of(2L), firstCardId);
+        firstCard.transferOut(Points.of(2L), secondCardId);
+        secondCard.transferIn(Points.of(2L), firstCardId);
 
         Points firstCardBalance = firstCard.calculateBalance();
         Points secondCardBalance = secondCard.calculateBalance();
@@ -54,11 +54,11 @@ class LoyaltyCardTest {
 
         final Points EXCEEDING_POINTS = INITIAL_POINTS.plus(Points.of(20L));
 
-        boolean withdrawalSuccess = firstCard.withdraw(EXCEEDING_POINTS, secondCardId);
+        var withdrawalResult = firstCard.transferOut(EXCEEDING_POINTS, secondCardId);
 
         Points points = firstCard.calculateBalance();
 
-        assertThat(withdrawalSuccess).isFalse();
+        assertThat(withdrawalResult).isNotEqualTo(OperationValidationResult.SUCCESS);
         assertThat(points).isEqualTo(INITIAL_POINTS);
     }
 
