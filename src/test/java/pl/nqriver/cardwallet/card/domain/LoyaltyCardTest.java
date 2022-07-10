@@ -5,11 +5,11 @@ import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator.Operation
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LoyaltyCardTest {
 
-    public static final Points INITIAL_POINTS = Points.of(20L);
+    public static final Balance BASELINE_BALANCE = Balance.of(Points.of(0L), Points.of(20L));
 
     @Test
     void shouldCalculateBalanceWithSimpleWithdrawalAndDeposit() {
@@ -52,27 +52,27 @@ class LoyaltyCardTest {
         LoyaltyCard.LoyaltyCardId secondCardId = givenLoyaltyCardIdOf(2L);
         LoyaltyCard firstCard = givenLoyaltyCardOfId(firstCardId);
 
-        final Points EXCEEDING_POINTS = INITIAL_POINTS.plus(Points.of(20L));
+        final Points EXCEEDING_POINTS = BASELINE_BALANCE.getTotalBalance().plus(Points.of(20L));
 
         var withdrawalResult = firstCard.transferOut(EXCEEDING_POINTS, secondCardId);
 
         Points points = firstCard.calculateBalance();
 
         assertThat(withdrawalResult).isNotEqualTo(OperationValidationResult.SUCCESS);
-        assertThat(points).isEqualTo(INITIAL_POINTS);
+        assertThat(points).isEqualTo(BASELINE_BALANCE.getTotalBalance());
     }
 
     @Test
     void shouldFailWithdrawal_whenThereAreNotEnoughPoints() {
         LoyaltyCard.LoyaltyCardId firstCardId = givenLoyaltyCardIdOf(1L);
         LoyaltyCard card = givenLoyaltyCardOfId(firstCardId);
-        Points exceedingPoints = INITIAL_POINTS.plus(Points.of(20L));
+        Points exceedingPoints = BASELINE_BALANCE.getTotalBalance().plus(Points.of(20L));
 
-        boolean withdrawalSuccess = card.withdraw(exceedingPoints);
+        OperationValidationResult withdrawalSuccess = card.withdraw(exceedingPoints);
         Points points = card.calculateBalance();
 
-        assertThat(withdrawalSuccess).isFalse();
-        assertThat(points).isEqualTo(INITIAL_POINTS);
+        assertThat(withdrawalSuccess).isNotEqualTo(OperationValidationResult.SUCCESS);
+        assertThat(points).isEqualTo(BASELINE_BALANCE.getTotalBalance());
 
     }
 
@@ -84,7 +84,7 @@ class LoyaltyCardTest {
     private LoyaltyCard givenLoyaltyCardOfId(LoyaltyCard.LoyaltyCardId cardId) {
         LoyaltyCard loyaltyCard = LoyaltyCard.withId(
                 cardId,
-                INITIAL_POINTS,
+                BASELINE_BALANCE,
                 ActivityWindow.emptyWindow(),
                 Holder.of("someholderemail@test.com"),
                 LocalDateTime.now(),

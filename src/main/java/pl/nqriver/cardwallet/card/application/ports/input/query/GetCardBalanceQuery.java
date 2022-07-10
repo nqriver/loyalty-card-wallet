@@ -5,6 +5,4 @@ import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
 public interface GetCardBalanceQuery {
     Balance getCardBalance(LoyaltyCardId id);
-
-    Balance getCardBalanceDetails(LoyaltyCardId id);
 }

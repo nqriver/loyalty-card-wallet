@@ -19,35 +19,28 @@ public class LoyaltyCardQueriesService implements GetCardBalanceQuery,
         GetCardActivityWindowQuery,
         GetCardGeneralInfoQuery {
 
-    private final LoyaltyCardPort loadLoyaltyCardPort;
+    private final LoyaltyCardPort loyaltyCardPort;
 
 
     @Override
     public Balance getCardBalance(LoyaltyCard.LoyaltyCardId id) {
-        return Balance.ofTotal(loadLoyaltyCardPort.loadLoyaltyCard(id));
+        return loyaltyCardPort.loadLoyaltyCardWithoutActivities(id)
+                .getBalance();
     }
-
-    @Override
-    public Balance getCardBalanceDetails(LoyaltyCard.LoyaltyCardId id) {
-        return Balance.of(loadLoyaltyCardPort.loadLoyaltyCard(id));
-    }
-
 
     @Override
     public List<Activity> getActivitiesOfCardForPeriod(LoyaltyCard.LoyaltyCardId id,
-                                                       LocalDateTime start, LocalDateTime end) {
-        return loadLoyaltyCardPort
-                .loadLoyaltyCard(id)
+                                                       LocalDateTime since,
+                                                       LocalDateTime until) {
+        return loyaltyCardPort
+                .loadLoyaltyCardWithActivitiesOfPeriod(id, since, until)
                 .getActivityWindow()
-                .getActivities()
-                .stream()
-                .filter(e -> e.getTimestamp().isAfter(start) && e.getTimestamp().isBefore(end))
-                .toList();
+                .getActivities();
     }
 
     @Override
     public LoyaltyCard getCardInfo(LoyaltyCard.LoyaltyCardId id) {
-        return loadLoyaltyCardPort.loadLoyaltyCardGeneralInfo(id);
+        return loyaltyCardPort.loadLoyaltyCardWithoutActivities(id);
     }
 }
 

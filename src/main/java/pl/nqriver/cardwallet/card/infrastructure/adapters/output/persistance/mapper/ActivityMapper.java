@@ -15,7 +15,7 @@ public class ActivityMapper {
     public ActivityWindow mapToActivityWindow(List<ActivityEntity> activities) {
         List<Activity> activitiesList = activities.stream()
                 .map(this::mapActivityEntityToDomainObject)
-                .collect(Collectors.toList());
+                .toList();
         return ActivityWindow.of(
                 activitiesList);
 

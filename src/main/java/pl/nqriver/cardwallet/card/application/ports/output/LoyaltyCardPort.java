@@ -8,9 +8,11 @@ import java.time.LocalDateTime;
 
 public interface LoyaltyCardPort {
 
-    LoyaltyCard loadLoyaltyCard(LoyaltyCardId id);
+    LoyaltyCard loadLoyaltyCardWithAllActivities(LoyaltyCardId id);
 
-    LoyaltyCard loadLoyaltyCardGeneralInfo(LoyaltyCardId id);
+    LoyaltyCard loadLoyaltyCardWithActivitiesOfPeriod(LoyaltyCardId id, LocalDateTime since, LocalDateTime until);
+
+    LoyaltyCard loadLoyaltyCardWithoutActivities(LoyaltyCardId id);
 
     LoyaltyCard createLoyaltyCard(CreateCardCommand command, LocalDateTime createdAt, LocalDateTime expiresAt);
 

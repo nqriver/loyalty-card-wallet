@@ -28,17 +28,16 @@ class LoyaltyCardFacade {
         return mapper.toLoyaltyCardResponse(loyaltyCard);
     }
 
-    LoyaltyCardResponse getGeneralInfo(final Long id) {
-        return mapper.toLoyaltyCardResponse(getCardGeneralInfoQuery.getCardInfo(of(id)));
+    LoyaltyCardResponse getGeneralInfo(final Long loyaltyCardId) {
+        return mapper.toLoyaltyCardResponse(getCardGeneralInfoQuery.getCardInfo(of(loyaltyCardId)));
     }
 
-    BalanceResponse getBalance(final Long id) {
-        return mapper.toBalanceResponse(getCardBalanceQuery.getCardBalance(of(id)));
+    BalanceResponse getBalance(final Long loyaltyCardId) {
+        return mapper.toBalanceResponse(getCardBalanceQuery.getCardBalance(of(loyaltyCardId)), loyaltyCardId);
     }
 
     public BalanceResponse getBalanceDetails(final Long loyaltyCardId) {
         return mapper.toBalanceResponse(
-                getCardBalanceQuery.getCardBalanceDetails(of(loyaltyCardId))
-        );
+                getCardBalanceQuery.getCardBalanceDetails(of(loyaltyCardId)), loyaltyCardId);
     }
 }

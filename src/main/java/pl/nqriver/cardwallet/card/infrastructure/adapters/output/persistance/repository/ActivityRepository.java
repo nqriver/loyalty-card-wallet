@@ -15,11 +15,13 @@ public interface ActivityRepository extends JpaRepository<ActivityEntity, Long> 
     @Query(
             "select a from ActivityEntity a " +
                     "where a.ownerLoyaltyCardId = :ownerCardId " +
-                    "and a.timestamp >= :since"
+                    "and a.timestamp >= :since " +
+                    "and a.timestamp <= :until"
     )
-    List<ActivityEntity> findByOwnerSince(
+    List<ActivityEntity> findByOwnerBetweenDates(
             @Param("ownerCardId") Long ownerCardId,
-            @Param("since") LocalDateTime since
+            @Param("since") LocalDateTime since,
+            @Param("until") LocalDateTime until
     );
 
     @Query(

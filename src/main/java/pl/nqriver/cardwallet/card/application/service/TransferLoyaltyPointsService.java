@@ -8,7 +8,6 @@ import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
-import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCardOperationValidator.OperationValidationResult;
 import pl.nqriver.cardwallet.card.domain.Points;
 
@@ -25,9 +24,9 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
     @Transactional
     @Override
     public void transferLoyaltyPoints(TransferLoyaltyPointsCommand command) {
-        LoyaltyCard sourceCard = loadLoyaltyCardPort.loadLoyaltyCard(
+        LoyaltyCard sourceCard = loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(
                 command.getSourceCardId());
-        LoyaltyCard targetCard = loadLoyaltyCardPort.loadLoyaltyCard(
+        LoyaltyCard targetCard = loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(
                 command.getTargetCardId());
 
         LoyaltyCardId sourceCardId = sourceCard.getId().orElseThrow(() -> new IllegalStateException("Source card ID is empty"));

@@ -21,12 +21,12 @@ import java.math.BigInteger;
 public interface LoyaltyCardRestMapper {
 
     @Mappings({
-            @Mapping(source = "loyaltyCardId", target = "loyaltyCardId", qualifiedByName = "cardIdToLong"),
-            @Mapping(source = "withdrawalBalance", target = "withdrawalBalance", qualifiedByName = "pointsToValue"),
-            @Mapping(source = "totalBalance", target = "totalBalance", qualifiedByName = "pointsToValue"),
-            @Mapping(source = "depositBalance", target = "depositBalance", qualifiedByName = "pointsToValue")
+            @Mapping(source = "cardId", target = "loyaltyCardId"),
+            @Mapping(source = "balance.withdrawalBalance", target = "withdrawalBalance", qualifiedByName = "pointsToValue"),
+            @Mapping(source = "balance.totalBalance", target = "totalBalance", qualifiedByName = "pointsToValue"),
+            @Mapping(source = "balance.depositBalance", target = "depositBalance", qualifiedByName = "pointsToValue")
     })
-    BalanceResponse toBalanceResponse(Balance balance);
+    BalanceResponse toBalanceResponse(Balance balance, Long cardId);
 
 
     @Mappings({

@@ -2,14 +2,13 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.ma
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nqriver.cardwallet.card.domain.ActivityWindow;
-import pl.nqriver.cardwallet.card.domain.Holder;
-import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
+import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
+import pl.nqriver.cardwallet.card.domain.*;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
-import pl.nqriver.cardwallet.card.domain.Points;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -18,16 +17,15 @@ public class LoyaltyCardMapper {
 
     private final ActivityMapper activityMapper;
 
-    public LoyaltyCard mapToDomainObjectWithActivities(
+    public LoyaltyCard mapToDomain(
             LoyaltyCardEntity loyaltyCardEntity,
             List<ActivityEntity> activities,
             Long withdrawalBalance,
             Long depositBalance
     ) {
-        Points baselinePoints = Points.subtract(Points.of(depositBalance), Points.of(withdrawalBalance));
         return LoyaltyCard.withId(
-                new LoyaltyCardId(loyaltyCardEntity.getId()),
-                baselinePoints,
+                LoyaltyCardId.of(loyaltyCardEntity.getId()),
+                Balance.of(Points.of(withdrawalBalance), Points.of(depositBalance)),
                 activityMapper.mapToActivityWindow(activities),
                 Holder.of(loyaltyCardEntity.getHolderEmail()),
                 loyaltyCardEntity.getCreatedAt(),
@@ -35,16 +33,18 @@ public class LoyaltyCardMapper {
         );
     }
 
-    public LoyaltyCard mapToSimplifiedDomainObject(LoyaltyCardEntity loyaltyCardEntity) {
-        Points baselinePoints = Points.of(0);
-        return LoyaltyCard.withId(
-                LoyaltyCardId.of(loyaltyCardEntity.getId()),
-                baselinePoints,
-                ActivityWindow.emptyWindow(),
-                Holder.of(loyaltyCardEntity.getHolderEmail()),
-                loyaltyCardEntity.getCreatedAt(),
-                loyaltyCardEntity.getExpiresAt()
-        );
+    public LoyaltyCard mapToDomainWithAllActivities(LoyaltyCardEntity loyaltyCardEntity, List<ActivityEntity> activities) {
+        return this.mapToDomain(loyaltyCardEntity, activities, 0L, 0L);
     }
 
+
+    public LoyaltyCardEntity mapToEntity(CreateCardCommand command,
+                                         LocalDateTime createdAt,
+                                         LocalDateTime expiresAt) {
+        LoyaltyCardEntity entity = new LoyaltyCardEntity();
+        entity.setCreatedAt(createdAt);
+        entity.setExpiresAt(expiresAt);
+        entity.setHolderEmail(command.getHolderEmail());
+        return entity;
+    }
 }

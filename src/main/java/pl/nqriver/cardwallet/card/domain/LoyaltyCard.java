@@ -13,7 +13,7 @@ public class LoyaltyCard {
 
     private final LoyaltyCardId id;
 
-    private final Points baselinePoints;
+    private final Balance baselineBalance;
 
     private final ActivityWindow activityWindow;
 
@@ -29,24 +29,24 @@ public class LoyaltyCard {
      * Static factory method to create a {@link LoyaltyCard} entity with an id.
      */
     public static LoyaltyCard withId(LoyaltyCardId id,
-                                     Points baselinePoints,
+                                     Balance baselineBalance,
                                      ActivityWindow window,
                                      Holder holder,
                                      LocalDateTime createdAt,
                                      LocalDateTime expiresAt
     ) {
-        return new LoyaltyCard(id, baselinePoints, window, holder, createdAt, expiresAt);
+        return new LoyaltyCard(id, baselineBalance, window, holder, createdAt, expiresAt);
     }
 
     /**
      * Static factory method to create a {@link LoyaltyCard} entity without an id. Used when entity is not yet persisted
      */
-    public static LoyaltyCard withoutId(Points baselinePoints,
+    public static LoyaltyCard withoutId(Balance baselineBalance,
                                         ActivityWindow window,
                                         Holder holder,
                                         LocalDateTime createdAt,
                                         LocalDateTime expiresAt) {
-        return new LoyaltyCard(null, baselinePoints, window, holder, createdAt, expiresAt);
+        return new LoyaltyCard(null, baselineBalance, window, holder, createdAt, expiresAt);
     }
 
     public Optional<LoyaltyCardId> getId() {
@@ -55,14 +55,18 @@ public class LoyaltyCard {
 
 
     public Points calculateBalance() {
-        return Points.add(activityWindow.calculateBalance(), baselinePoints);
+        return Points.add(activityWindow.calculateBalance(), baselineBalance.getTotalBalance());
     }
 
 
-    public boolean withdraw(Points points) {
+    public OperationValidationResult withdraw(Points points) {
+        OperationValidationResult operationResult =
+                isAccountBalanceSufficient(points)
+                        .and(isCardNotExpired())
+                        .apply(this);
 
-        if (!canBeWithdrawn(points)) {
-            return false;
+        if (operationResult.otherThan(OperationValidationResult.SUCCESS)) {
+            return operationResult;
         }
         Activity withdrawal = WithdrawalActivity.builder()
                 .timestamp(LocalDateTime.now())
@@ -71,7 +75,7 @@ public class LoyaltyCard {
                 .build();
 
         activityWindow.addActivity(withdrawal);
-        return true;
+        return operationResult;
     }
 
     public OperationValidationResult transferOut(Points points, LoyaltyCardId targetCardId) {
@@ -148,6 +152,12 @@ public class LoyaltyCard {
 
     public String getHolderEmail() {
         return holder.getEmail();
+    }
+
+    public Balance getBalance() {
+        Points deposited = Points.add(baselineBalance.getDepositBalance(), activityWindow.calculateDepositBalance());
+        Points withdrawn = Points.add(baselineBalance.getWithdrawalBalance(), activityWindow.calculateWithdrawalBalance());
+        return Balance.of(withdrawn, deposited);
     }
 
     @Value
