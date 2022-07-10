@@ -4,14 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardUseCase;
+import pl.nqriver.cardwallet.card.application.ports.input.command.ExtendExpirationDateUseCase;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-public class CreateLoyaltyCardService implements CreateCardUseCase {
+public class LoyaltyCardCommandService implements CreateCardUseCase, ExtendExpirationDateUseCase {
 
     private final LoyaltyCardProperties loyaltyCardProperties;
     private final LoyaltyCardPort loyaltyCardPort;
@@ -20,7 +22,14 @@ public class CreateLoyaltyCardService implements CreateCardUseCase {
     @Override
     public LoyaltyCard setUpNewLoyaltyCard(CreateCardCommand command) {
         LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime expiresAt = loyaltyCardProperties.getExpirationDate(createdAt);
+        LocalDateTime expiresAt = loyaltyCardProperties.calculateExpirationDate(createdAt);
         return loyaltyCardPort.createLoyaltyCard(command, createdAt, expiresAt);
+    }
+
+    @Override
+    @Transactional
+    public void extendExpirationDate(LoyaltyCard.LoyaltyCardId id) {
+        LocalDateTime newExpirationDate = loyaltyCardProperties.calculateExpirationDate(LocalDateTime.now());
+        loyaltyCardPort.updateExpirationDate(id, newExpirationDate);
     }
 }

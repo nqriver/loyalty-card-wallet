@@ -18,8 +18,7 @@ public class LoyaltyCardModelAssembler implements RepresentationModelAssembler<L
     public EntityModel<LoyaltyCardResponse> toModel(LoyaltyCardResponse response) {
         return EntityModel.of(response,
                 linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getId())).withRel("generalInfo"),
-                linkTo(methodOn(LoyaltyCardController.class).getPointsBalance(response.getId())).withRel("balance"),
-                linkTo(methodOn(LoyaltyCardController.class).getPointsBalanceDetails(response.getId())).withRel("balanceDetails"),
+                linkTo(methodOn(LoyaltyCardController.class).getBalance(response.getId())).withRel("balance"),
                 linkTo(methodOn(ActivityWindowViewController.class).getActivities(response.getId(),
                         Optional.of(response.getCreatedAt()),
                         Optional.of(LocalDateTime.now()))).withRel("activities")

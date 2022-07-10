@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-public class LoyaltyCardQueriesService implements GetCardBalanceQuery,
+public class LoyaltyCardQueryService implements GetCardBalanceQuery,
         GetCardActivityWindowQuery,
         GetCardGeneralInfoQuery {
 

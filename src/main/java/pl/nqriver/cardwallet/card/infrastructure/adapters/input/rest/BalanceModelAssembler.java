@@ -1,6 +1,5 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,7 @@ public class BalanceModelAssembler implements RepresentationModelAssembler<Balan
     public EntityModel<BalanceResponse> toModel(BalanceResponse response) {
         return EntityModel.of(response,
                 linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getLoyaltyCardId())).withRel("generalInfo"),
-                linkTo(methodOn(LoyaltyCardController.class).getPointsBalance(response.getLoyaltyCardId())).withSelfRel(),
-                linkTo(methodOn(LoyaltyCardController.class).getPointsBalanceDetails(response.getLoyaltyCardId())).withSelfRel(),
+                linkTo(methodOn(LoyaltyCardController.class).getBalance(response.getLoyaltyCardId())).withSelfRel(),
                 linkTo(methodOn(ActivityWindowViewController.class).getActivities(response.getLoyaltyCardId(),
                         Optional.empty(),
                         Optional.of(LocalDateTime.now()))).withRel("activities"));

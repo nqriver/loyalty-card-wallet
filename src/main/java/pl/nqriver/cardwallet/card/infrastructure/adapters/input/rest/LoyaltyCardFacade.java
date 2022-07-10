@@ -3,6 +3,7 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardUseCase;
+import pl.nqriver.cardwallet.card.application.ports.input.command.ExtendExpirationDateUseCase;
 import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardBalanceQuery;
 import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardGeneralInfoQuery;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
@@ -19,6 +20,7 @@ class LoyaltyCardFacade {
     private final GetCardBalanceQuery getCardBalanceQuery;
     private final GetCardGeneralInfoQuery getCardGeneralInfoQuery;
     private final CreateCardUseCase createCardUseCase;
+    private final ExtendExpirationDateUseCase extendExpirationDateUseCase;
     private final LoyaltyCardRestMapper mapper;
 
     LoyaltyCardResponse create(final CreateLoyaltyCardRequest request) {
@@ -36,8 +38,7 @@ class LoyaltyCardFacade {
         return mapper.toBalanceResponse(getCardBalanceQuery.getCardBalance(of(loyaltyCardId)), loyaltyCardId);
     }
 
-    public BalanceResponse getBalanceDetails(final Long loyaltyCardId) {
-        return mapper.toBalanceResponse(
-                getCardBalanceQuery.getCardBalanceDetails(of(loyaltyCardId)), loyaltyCardId);
+    void extendExpirationDate(final Long id) {
+        extendExpirationDateUseCase.extendExpirationDate(LoyaltyCard.LoyaltyCardId.of(id));
     }
 }

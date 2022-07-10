@@ -16,4 +16,5 @@ public interface LoyaltyCardPort {
 
     LoyaltyCard createLoyaltyCard(CreateCardCommand command, LocalDateTime createdAt, LocalDateTime expiresAt);
 
+    void updateExpirationDate(LoyaltyCardId id, LocalDateTime newExpirationDate);
 }

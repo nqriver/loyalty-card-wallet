@@ -14,7 +14,7 @@ public class LoyaltyCardProperties {
 
     private final Long cardValidityPeriodInYears;
 
-    public LocalDateTime getExpirationDate(LocalDateTime creationDate) {
+    public LocalDateTime calculateExpirationDate(LocalDateTime creationDate) {
         return creationDate.plusYears(this.cardValidityPeriodInYears);
     }
 }

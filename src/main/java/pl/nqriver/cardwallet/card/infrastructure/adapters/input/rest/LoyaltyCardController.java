@@ -1,5 +1,6 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -14,22 +15,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("cards")
+@RequestMapping(LoyaltyCardController.SERVICE_PATH)
 @RequiredArgsConstructor
+@Api("Loyalty card services")
 public class LoyaltyCardController {
+
+    public static final String SERVICE_PATH = "cards";
 
     private final LoyaltyCardFacade facade;
     private final LoyaltyCardModelAssembler cardModelAssembler;
     private final BalanceModelAssembler balanceModelAssembler;
 
     @GetMapping("/{id}/balance")
-    ResponseEntity<EntityModel<BalanceResponse>> getPointsBalance(@PathVariable("id") Long loyaltyCardId) {
+    ResponseEntity<EntityModel<BalanceResponse>> getBalance(@PathVariable("id") Long loyaltyCardId) {
         return ResponseEntity.ok(balanceModelAssembler.toModel(facade.getBalance(loyaltyCardId)));
-    }
-
-    @GetMapping("/{id}/balance/details")
-    ResponseEntity<EntityModel<BalanceResponse>> getPointsBalanceDetails(@PathVariable("id") Long loyaltyCardId) {
-        return ResponseEntity.ok(balanceModelAssembler.toModel(facade.getBalanceDetails(loyaltyCardId)));
     }
 
     @PostMapping("")
@@ -39,6 +38,12 @@ public class LoyaltyCardController {
                 .created(
                     linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(loyaltyCardResponse.getId())).toUri())
                 .body(cardModelAssembler.toModel(loyaltyCardResponse));
+    }
+
+    @PutMapping("/{id}/validity")
+    ResponseEntity<?> extendExpirationDate(@PathVariable("id") Long loyaltyCardId) {
+        facade.extendExpirationDate(loyaltyCardId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")

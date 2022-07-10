@@ -107,4 +107,13 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
                 0L, 0L);
     }
 
+    @Override
+    public void updateExpirationDate(LoyaltyCard.LoyaltyCardId id, LocalDateTime newExpirationDate) {
+        Long idValue = id.getValue();
+
+        LoyaltyCardEntity loyaltyCard = loyaltyCardRepository.findById(idValue)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("%Loyalty card of id: %d cannot be found", idValue)));
+        loyaltyCard.setExpiresAt(newExpirationDate);
+    }
+
 }
