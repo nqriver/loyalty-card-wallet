@@ -1,17 +1,21 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response;
 
-import lombok.Value;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Value
+@Getter
 public class ApiErrorResponse {
+
     private final LocalDateTime timestamp;
+
     private final HttpStatus status;
+
     private final String message;
+
     private final List<String> errors;
 
     public ApiErrorResponse(final HttpStatus status, final String message, final List<String> errors) {

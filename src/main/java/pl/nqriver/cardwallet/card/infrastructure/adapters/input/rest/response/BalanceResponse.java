@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 public class BalanceResponse {
-    private Long loyaltyCardId;
+    private final Long loyaltyCardId;
     private Long totalBalance;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long depositBalance;
+    private final Long depositBalance;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long withdrawalBalance;
+    private final Long withdrawalBalance;
 }

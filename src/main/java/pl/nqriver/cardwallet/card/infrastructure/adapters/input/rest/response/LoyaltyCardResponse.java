@@ -8,8 +8,12 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class LoyaltyCardResponse {
-    private Long id;
-    private String holderEmail;
-    private LocalDateTime expiresAt;
-    private LocalDateTime createdAt;
+
+    private final Long id;
+
+    private final String holderEmail;
+
+    private final LocalDateTime expiresAt;
+
+    private final LocalDateTime createdAt;
 }

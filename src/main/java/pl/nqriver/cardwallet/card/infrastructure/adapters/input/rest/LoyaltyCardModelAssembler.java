@@ -1,5 +1,6 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 
+import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -15,18 +16,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class LoyaltyCardModelAssembler implements RepresentationModelAssembler<LoyaltyCardResponse, EntityModel<LoyaltyCardResponse>> {
     @Override
-    public EntityModel<LoyaltyCardResponse> toModel(LoyaltyCardResponse response) {
+    public EntityModel<LoyaltyCardResponse> toModel(@NonNull LoyaltyCardResponse response) {
         return EntityModel.of(response,
                 linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getId())).withRel("generalInfo"),
                 linkTo(methodOn(LoyaltyCardController.class).getBalance(response.getId())).withRel("balance"),
-                linkTo(methodOn(ActivityWindowViewController.class).getActivities(response.getId(),
+                linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.getId(),
                         Optional.of(response.getCreatedAt()),
                         Optional.of(LocalDateTime.now()))).withRel("activities")
         );
-    }
-
-    @Override
-    public CollectionModel<EntityModel<LoyaltyCardResponse>> toCollectionModel(Iterable<? extends LoyaltyCardResponse> entities) {
-        return RepresentationModelAssembler.super.toCollectionModel(entities);
     }
 }

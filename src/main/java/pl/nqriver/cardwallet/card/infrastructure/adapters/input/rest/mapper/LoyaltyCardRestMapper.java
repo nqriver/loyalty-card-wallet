@@ -6,16 +6,19 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsCommand;
+import pl.nqriver.cardwallet.card.domain.Activity;
 import pl.nqriver.cardwallet.card.domain.Balance;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.domain.Points;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request.CreateLoyaltyCardRequest;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request.TransferRequest;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.ActivityResponse;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.BalanceResponse;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.LoyaltyCardResponse;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface LoyaltyCardRestMapper {
@@ -30,7 +33,7 @@ public interface LoyaltyCardRestMapper {
 
 
     @Mappings({
-            @Mapping(target = "id", expression = "java(loyaltyCard.getId().get().getValue())"),
+            @Mapping(target = "id", source = "id", qualifiedByName = "optionalOfCardIdToLong"),
             @Mapping(target = "holderEmail", expression = "java(loyaltyCard.getHolderEmail())"),
     })
     LoyaltyCardResponse toLoyaltyCardResponse(LoyaltyCard loyaltyCard);
@@ -47,6 +50,8 @@ public interface LoyaltyCardRestMapper {
         @Mapping(source = "points", target = "points", qualifiedByName = "longToPoints")
     })
     TransferLoyaltyPointsCommand toTransferCommand(TransferRequest request);
+
+
 
     @Named("toPoints")
     default Points bigIntegerToPoints(BigInteger points) {
@@ -66,6 +71,11 @@ public interface LoyaltyCardRestMapper {
     @Named("cardIdToLong")
     default Long cardIdToLong(LoyaltyCardId id) {
         return id.getValue();
+    }
+
+    @Named("optionalOfCardIdToLong")
+    default Long optionalOfCardIdToLong(Optional<LoyaltyCardId> id) {
+        return id.get().getValue();
     }
 
     @Named("longToCardId")
