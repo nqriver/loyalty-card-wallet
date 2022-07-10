@@ -1,6 +1,7 @@
 package pl.nqriver.cardwallet.card.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsCommand;
 import pl.nqriver.cardwallet.card.application.ports.input.command.TransferLoyaltyPointsUseCase;
@@ -15,6 +16,7 @@ import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCase {
 
     private final LoyaltyCardPort loadLoyaltyCardPort;
@@ -24,6 +26,7 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
     @Transactional
     @Override
     public void transferLoyaltyPoints(TransferLoyaltyPointsCommand command) {
+        log.info("Transfer Service: Transfer started");
         LoyaltyCard sourceCard = loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(
                 command.getSourceCardId());
         LoyaltyCard targetCard = loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(
@@ -34,18 +37,24 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
 
         Points transferPoints = command.getPoints();
 
+        log.debug("Transfer Service: Withdrawing points from source loyalty card of id {}", command.getSourceCardId());
         var withdrawalResult = sourceCard.transferOut(transferPoints, targetCardId);
         handleOperationResult(withdrawalResult);
 
+        log.debug("Transfer Service: Depositing points to target loyalty card of id {}", command.getTargetCardId());
         var depositResult = targetCard.transferIn(transferPoints, sourceCardId);
         handleOperationResult(depositResult);
 
         loyaltyCardActivitiesPort.updateActivities(sourceCard);
         loyaltyCardActivitiesPort.updateActivities(targetCard);
+
+        log.info("Transfer Service: Points of {} have been successfully transferred from loyalty card of id {}" +
+                " to loyalty card of id {}", transferPoints, sourceCardId, targetCard);
     }
 
     private void handleOperationResult(OperationValidationResult operationValidationResult) {
         if (operationValidationResult.isNotSuccess()) {
+            log.error("Transfer operation aborted. Cause: {}", operationValidationResult.getMessage());
             throw new OperationTerminatedWithFailureException(operationValidationResult.getMessage());
         }
     }

@@ -1,6 +1,7 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActivitiesPort {
 
     private final LoyaltyCardRepository loyaltyCardRepository;
@@ -31,9 +33,11 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
     @Override
     public LoyaltyCard loadLoyaltyCardWithAllActivities(LoyaltyCard.LoyaltyCardId id) {
         Long loyaltyCardId = id.getValue();
+        log.debug("Persistence adapter: Fetching loyalty card with id: {}", loyaltyCardId);
         LoyaltyCardEntity loyaltyCardEntity =
                 loyaltyCardRepository.findById(loyaltyCardId)
                         .orElseThrow(() -> new ResourceNotFoundException("Cannot find resource of id" + loyaltyCardId));
+        log.debug("Persistence adapter: Fetching all activities of loyalty card with id: {}", loyaltyCardId);
         List<ActivityEntity> activities = activityRepository.findByOwner(loyaltyCardId);
 
         return loyaltyCardMapper.mapToDomainWithAllActivities(loyaltyCardEntity, activities);
@@ -47,8 +51,12 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
                 loyaltyCardRepository.findById(loyaltyCardId)
                         .orElseThrow(() -> new ResourceNotFoundException("Cannot find resource of id" + loyaltyCardId));
 
+        log.debug("Persistence adapter: Fetching activities between dates {} - {} of loyalty card with id: {}",
+                since, until, loyaltyCardId);
         List<ActivityEntity> activities = activityRepository.findByOwnerBetweenDates(loyaltyCardId, since, until);
 
+        log.debug("Persistence adapter: Getting deposit and withdrawal balance between dates {} - {} of loyalty card with id: {}",
+                since, until, loyaltyCardId);
         Long pointsDepositBalance = getValueElseZero
                 (activityRepository.getPointsDepositBalanceUntil(loyaltyCardId, since));
         Long pointsWithdrawalBalance = getValueElseZero(
@@ -64,9 +72,11 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
     @Override
     public LoyaltyCard loadLoyaltyCardWithoutActivities(LoyaltyCard.LoyaltyCardId id) {
         Long cardId = id.getValue();
+        log.debug("Persistence adapter: Fetching loyalty card with id: {}", cardId);
         LoyaltyCardEntity entity = loyaltyCardRepository.findById(cardId).orElseThrow(
                 () -> new ResourceNotFoundException(String.format("%s %d %s", "Resource of id:", cardId, "cannot be found")));
 
+        log.debug("Persistence adapter: Getting total deposit and withdrawal balance of loyalty card with id: {}", cardId);
         Long allDepositedPoints = getValueElseZero
                 (activityRepository.getPointsDepositBalance(cardId));
         Long allWithdrawnPoints = getValueElseZero(
@@ -86,13 +96,13 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
 
     @Override
     public void updateActivities(LoyaltyCard loyaltyCard) {
-
         loyaltyCard.getActivityWindow()
                 .getActivities()
                 .stream()
                 .filter(activity -> Objects.isNull(activity.getId()))
                 .map(activityMapper::mapDomainObjectToActivityEntity)
                 .forEach(activityRepository::save);
+        log.info("Persistence Adapter: Updating activities of loyalty card with id: {}", loyaltyCard.getId().get());
 
     }
 
@@ -102,6 +112,7 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
                                          LocalDateTime expiresAt) {
         LoyaltyCardEntity entity = loyaltyCardMapper.mapToEntity(command, createdAt, expiresAt);
         LoyaltyCardEntity savedEntity = loyaltyCardRepository.save(entity);
+        log.info("Persistence Adapter: Loyalty card saved by id: {}", savedEntity.getId());
         return loyaltyCardMapper.mapToDomain(savedEntity,
                 Collections.emptyList(),
                 0L, 0L);
@@ -114,6 +125,7 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
         LoyaltyCardEntity loyaltyCard = loyaltyCardRepository.findById(idValue)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("%Loyalty card of id: %d cannot be found", idValue)));
         loyaltyCard.setExpiresAt(newExpirationDate);
+        log.info("Persistence Adapter: Loyalty card of id {} updated with expiration date of{}", loyaltyCard.getId(), loyaltyCard.getExpiresAt());
     }
 
 }

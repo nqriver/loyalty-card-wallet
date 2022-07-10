@@ -27,7 +27,6 @@ public class LoyaltyCardCommandService implements CreateCardUseCase, ExtendExpir
     }
 
     @Override
-    @Transactional
     public void extendExpirationDate(LoyaltyCard.LoyaltyCardId id) {
         LocalDateTime newExpirationDate = loyaltyCardProperties.calculateExpirationDate(LocalDateTime.now());
         loyaltyCardPort.updateExpirationDate(id, newExpirationDate);
