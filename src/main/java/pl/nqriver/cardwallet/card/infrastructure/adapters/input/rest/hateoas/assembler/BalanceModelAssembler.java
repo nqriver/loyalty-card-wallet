@@ -1,9 +1,12 @@
-package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.hateoas.assembler;
 
 import lombok.NonNull;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.ActivitiesQueryController;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.LoyaltyCardController;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.BalanceResponse;
 
 import java.time.LocalDateTime;
@@ -18,9 +21,9 @@ public class BalanceModelAssembler implements RepresentationModelAssembler<Balan
     @Override
     public EntityModel<BalanceResponse> toModel(@NonNull BalanceResponse response) {
         return EntityModel.of(response,
-                linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getLoyaltyCardId())).withRel("generalInfo"),
+                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getLoyaltyCardId())).withRel("generalInfo"),
                 linkTo(methodOn(LoyaltyCardController.class).getBalance(response.getLoyaltyCardId())).withSelfRel(),
-                linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.getLoyaltyCardId(),
+                WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.getLoyaltyCardId(),
                         Optional.empty(),
                         Optional.of(LocalDateTime.now()))).withRel("activities"));
     }

@@ -1,10 +1,13 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.hateoas.assembler.ActivityModelAssembler;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.ActivityResponse;
 
 import java.time.LocalDateTime;
@@ -14,6 +17,7 @@ import java.util.Optional;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Api("Loyalty card activity query services")
 @RestController
 @RequiredArgsConstructor
 public class ActivitiesQueryController {
@@ -22,9 +26,10 @@ public class ActivitiesQueryController {
     private final ActivityFacade activityFacade;
 
 
+    @ApiOperation(value = "Retrieves the window of activities of given period or all activities if no dates are given")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("card/{id}/activities")
-    CollectionModel<EntityModel<ActivityResponse>> getActivities(
+    public CollectionModel<EntityModel<ActivityResponse>> getActivities(
             @PathVariable("id") Long loyaltyCardId,
             @RequestParam(required = false) Optional<LocalDateTime> since,
             @RequestParam(required = false) Optional<LocalDateTime> until

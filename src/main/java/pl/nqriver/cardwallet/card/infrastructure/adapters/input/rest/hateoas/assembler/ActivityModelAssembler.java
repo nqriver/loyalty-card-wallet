@@ -1,10 +1,13 @@
-package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.hateoas.assembler;
 
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.ActivitiesQueryController;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.LoyaltyCardController;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.ActivityResponse;
 
 import java.util.Optional;
@@ -27,10 +30,10 @@ public class ActivityModelAssembler implements RepresentationModelAssembler<Acti
     @Override
     public @NonNull EntityModel<ActivityResponse> toModel(@NonNull ActivityResponse activity) {
         EntityModel<ActivityResponse> activityModel = EntityModel.of(activity,
-                linkTo(methodOn(LoyaltyCardController.class).getBalance(activity.getOwnerCardId())).withRel("balance"));
+                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getBalance(activity.getOwnerCardId())).withRel("balance"));
 
         if (activity.getType().equalsIgnoreCase("incoming")) {
-            activityModel.add(linkTo(methodOn(ActivitiesQueryController.class)
+            activityModel.add(WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class)
                     .getActivities(activity.getOwnerCardId(),
                             Optional.of(activity.getTimestamp().minusYears(1)),
                             Optional.of(activity.getTimestamp())))
