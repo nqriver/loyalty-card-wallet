@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "activities")
@@ -35,5 +36,19 @@ public class ActivityEntity {
 
     @Column(name = "incoming")
     private boolean isIncoming;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActivityEntity that = (ActivityEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(timestamp, ownerLoyaltyCardId, sourceLoyaltyCardId, targetLoyaltyCardId);
+    }
 }
 
