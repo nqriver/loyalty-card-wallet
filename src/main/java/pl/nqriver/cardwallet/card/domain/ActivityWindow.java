@@ -51,12 +51,12 @@ public class ActivityWindow {
         this.activities.add(activity);
     }
 
-    public ActivityWindow(List<Activity> activities) {
-        this.activities = activities;
+    private ActivityWindow(List<Activity> activities) {
+        this.activities = new ArrayList<>(activities);
     }
 
     public static ActivityWindow emptyWindow() {
-        return new ActivityWindow(new ArrayList<>());
+        return new ActivityWindow(Collections.emptyList());
     }
 
     public static ActivityWindow of(List<Activity> activities) {
