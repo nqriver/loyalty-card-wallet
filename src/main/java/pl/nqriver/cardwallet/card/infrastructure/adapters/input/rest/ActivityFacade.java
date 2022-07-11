@@ -28,4 +28,22 @@ public class ActivityFacade {
                 getCardActivityWindowQuery.getActivitiesOfCardForPeriod(
                         LoyaltyCardId.of(loyaltyCardId), sinceDate, untilDate));
     }
+
+    public List<ActivityResponse> getOutgoingActivities(Long loyaltyCardId, Optional<LocalDateTime> since, Optional<LocalDateTime> until) {
+        var sinceDate = since.orElse(LocalDateTime.now().minusYears(1));
+        var untilDate = until.orElse(LocalDateTime.now());
+
+        return activityRestMapper.toActivityResponseList(
+                getCardActivityWindowQuery.getOutgoingActivitiesOfCardForPeriod(
+                        LoyaltyCardId.of(loyaltyCardId), sinceDate, untilDate));
+    }
+
+    public List<ActivityResponse> getIncomingActivities(Long loyaltyCardId, Optional<LocalDateTime> since, Optional<LocalDateTime> until) {
+        var sinceDate = since.orElse(LocalDateTime.now().minusYears(1));
+        var untilDate = until.orElse(LocalDateTime.now());
+
+        return activityRestMapper.toActivityResponseList(
+                getCardActivityWindowQuery.getIncomingActivitiesOfCardForPeriod(
+                        LoyaltyCardId.of(loyaltyCardId), sinceDate, untilDate));
+    }
 }

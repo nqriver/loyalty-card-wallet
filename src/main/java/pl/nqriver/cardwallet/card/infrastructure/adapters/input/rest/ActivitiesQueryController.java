@@ -39,5 +39,31 @@ public class ActivitiesQueryController {
                 .add(linkTo(methodOn(ActivitiesQueryController.class).getActivities(loyaltyCardId, since, until)).withSelfRel());
     }
 
+    @ApiOperation(value = "Retrieves the window of expenditures/outgoings of given period or all expenditures if no dates are given")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("card/{id}/activities/incomings")
+    public CollectionModel<EntityModel<ActivityResponse>> getIncomings(
+            @PathVariable("id") Long loyaltyCardId,
+            @RequestParam(required = false) Optional<LocalDateTime> since,
+            @RequestParam(required = false) Optional<LocalDateTime> until
+    ) {
+        List<ActivityResponse> activities = activityFacade.getIncomingActivities(loyaltyCardId, since, until);
+        return activityModelAssembler.toCollectionModel(activities)
+                .add(linkTo(methodOn(ActivitiesQueryController.class).getIncomings(loyaltyCardId, since, until)).withSelfRel());
+    }
+
+    @ApiOperation(value = "Retrieves the window of incomings/revenues of given period or all incomings if no dates are given")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("card/{id}/activities/outgoings")
+    public CollectionModel<EntityModel<ActivityResponse>> getOutgoings(
+            @PathVariable("id") Long loyaltyCardId,
+            @RequestParam(required = false) Optional<LocalDateTime> since,
+            @RequestParam(required = false) Optional<LocalDateTime> until
+    ) {
+        List<ActivityResponse> activities = activityFacade.getOutgoingActivities(loyaltyCardId, since, until);
+        return activityModelAssembler.toCollectionModel(activities)
+                .add(linkTo(methodOn(ActivitiesQueryController.class).getOutgoings(loyaltyCardId, since, until)).withSelfRel());
+    }
+
 
 }

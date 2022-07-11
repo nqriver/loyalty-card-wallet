@@ -3,6 +3,7 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.hateoas.as
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.LoyaltyCard
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.ActivityResponse;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -29,16 +31,24 @@ public class ActivityModelAssembler implements RepresentationModelAssembler<Acti
 
     @Override
     public @NonNull EntityModel<ActivityResponse> toModel(@NonNull ActivityResponse activity) {
-        EntityModel<ActivityResponse> activityModel = EntityModel.of(activity,
-                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getBalance(activity.getOwnerCardId())).withRel("balance"));
+        return EntityModel.of(activity,
+                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getBalance(activity.getOwnerCardId())).withRel("balance"),
+                WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class)
+                        .getActivities(activity.getOwnerCardId(),
+                                Optional.of(activity.getTimestamp().minusYears(1)),
+                                Optional.of(activity.getTimestamp()))).withSelfRel())
 
-        if (activity.getType().equalsIgnoreCase("incoming")) {
-            activityModel.add(WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class)
-                    .getActivities(activity.getOwnerCardId(),
-                            Optional.of(activity.getTimestamp().minusYears(1)),
-                            Optional.of(activity.getTimestamp())))
-                    .withRel("all incoming"));
-        }
-        return activityModel;
+                        .addIf(activity.getType().equalsIgnoreCase("incoming"), () ->
+                                linkTo(methodOn(ActivitiesQueryController.class)
+                                        .getIncomings(activity.getOwnerCardId(),
+                                                Optional.of(activity.getTimestamp().minusYears(1)),
+                                                Optional.of(activity.getTimestamp())))
+                                        .withRel("all incomings"))
+                        .addIf(activity.getType().equalsIgnoreCase("outgoing"), () ->
+                                linkTo(methodOn(ActivitiesQueryController.class)
+                                        .getOutgoings(activity.getOwnerCardId(),
+                                                Optional.of(activity.getTimestamp().minusYears(1)),
+                                                Optional.of(activity.getTimestamp())))
+                                        .withRel("all outgoings"));
     }
 }

@@ -54,9 +54,8 @@ public class ActivityFactory {
             return TransactionType.DEPOSIT;
         } else if (activityEntity.getTargetLoyaltyCardId() == null) {
             return TransactionType.WITHDRAWAL;
-        } else {
-            return TransactionType.TRANSFER;
         }
+        return TransactionType.TRANSFER;
     }
 
     private enum TransactionType {

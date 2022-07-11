@@ -7,6 +7,7 @@ import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardBalanceQu
 import pl.nqriver.cardwallet.card.application.ports.input.query.GetCardGeneralInfoQuery;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.Activity;
+import pl.nqriver.cardwallet.card.domain.ActivityType;
 import pl.nqriver.cardwallet.card.domain.Balance;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
 
@@ -36,6 +37,22 @@ public class LoyaltyCardQueryService implements GetCardBalanceQuery,
                 .loadLoyaltyCardWithActivitiesOfPeriod(id, since, until)
                 .getActivityWindow()
                 .getActivities();
+    }
+
+    @Override
+    public List<Activity> getIncomingActivitiesOfCardForPeriod(LoyaltyCard.LoyaltyCardId id, LocalDateTime start, LocalDateTime end) {
+        return this.getActivitiesOfCardForPeriod(id, start, end)
+                .stream()
+                .filter(activity -> ActivityType.INCOMING.equals(activity.getTypeOfActivity()))
+                .toList();
+    }
+
+    @Override
+    public List<Activity> getOutgoingActivitiesOfCardForPeriod(LoyaltyCard.LoyaltyCardId id, LocalDateTime start, LocalDateTime end) {
+        return this.getActivitiesOfCardForPeriod(id, start, end)
+                .stream()
+                .filter(activity -> ActivityType.OUTGOING.equals(activity.getTypeOfActivity()))
+                .toList();
     }
 
     @Override

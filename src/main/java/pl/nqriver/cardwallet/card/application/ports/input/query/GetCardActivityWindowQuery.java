@@ -11,4 +11,10 @@ public interface GetCardActivityWindowQuery {
     List<Activity> getActivitiesOfCardForPeriod(LoyaltyCard.LoyaltyCardId id,
                                                 LocalDateTime start, LocalDateTime end);
 
+    List<Activity> getIncomingActivitiesOfCardForPeriod(LoyaltyCard.LoyaltyCardId id,
+                                                LocalDateTime start, LocalDateTime end);
+
+    List<Activity> getOutgoingActivitiesOfCardForPeriod(LoyaltyCard.LoyaltyCardId id,
+                                                LocalDateTime start, LocalDateTime end);
+
 }
