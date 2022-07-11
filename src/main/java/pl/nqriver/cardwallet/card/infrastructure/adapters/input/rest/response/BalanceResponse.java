@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class BalanceResponse {
     private final Long loyaltyCardId;
-    private Long totalBalance;
+    private final Long totalBalance;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Long depositBalance;

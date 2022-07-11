@@ -163,7 +163,7 @@ public class LoyaltyCard {
     @Value
     public static class LoyaltyCardId {
         private final Long value;
-        public static LoyaltyCardId of(Long value) {
+        public static @NonNull LoyaltyCardId of(Long value) {
             return new LoyaltyCardId(value);
         }
     }

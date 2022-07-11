@@ -11,12 +11,12 @@ import java.math.BigInteger;
 @Data
 public class TransferRequest {
 
-    @NotNull
+    @NotNull(message = "Id of source card of transaction cannot be null")
     private final Long sourceCardId;
 
-    @NotNull
+    @NotNull(message = "Id of target card of transaction cannot be null")
     private final Long targetCardId;
 
-    @Positive
+    @Positive(message = "The amount of points to transfer must be positive")
     private final BigInteger points;
 }

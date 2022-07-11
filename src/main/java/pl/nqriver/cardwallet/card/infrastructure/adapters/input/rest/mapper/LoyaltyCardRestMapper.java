@@ -39,7 +39,7 @@ public interface LoyaltyCardRestMapper {
     LoyaltyCardResponse toLoyaltyCardResponse(LoyaltyCard loyaltyCard);
 
     @Mappings({
-            @Mapping(source = "baselinePoints", target = "baselinePoints", qualifiedByName = "toPoints")
+            @Mapping(source = "email", target = "holderEmail")
     })
     CreateCardCommand toCreateCardCommand(CreateLoyaltyCardRequest request);
 

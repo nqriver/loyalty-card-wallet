@@ -6,14 +6,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.nqriver.cardwallet.card.application.service.OperationTerminatedWithFailureException;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.ApiErrorResponse;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.exception.ResourceNotFoundException;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.exception.ResourceNotFoundException;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -44,7 +44,8 @@ public class ApiExceptionHandler {
         final Map<String, String> errorMap = exception.getBindingResult()
                 .getAllErrors()
                 .stream()
-                .collect(Collectors.toMap(error -> ((FieldError) error).getField(), ObjectError::getDefaultMessage));
+                .collect(Collectors.toMap(error -> ((FieldError) error).getField(),
+                        objectError -> Objects.isNull(objectError.getDefaultMessage()) ? "" : objectError.getDefaultMessage()));
 
         final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errorMap);
         return ResponseEntity.badRequest().body(errorResponse);
