@@ -1,37 +1,29 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.domain.*;
-import pl.nqriver.cardwallet.card.domain.Activity.ActivityId;
-import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ActivityMapper {
+
+    private final ActivityFactory activityFactory;
+
 
     public ActivityWindow mapToActivityWindow(List<ActivityEntity> activities) {
         List<Activity> activitiesList = activities.stream()
                 .map(this::mapActivityEntityToDomainObject)
                 .toList();
-        return ActivityWindow.of(
-                activitiesList);
+        return ActivityWindow.of(activitiesList);
 
     }
 
     private Activity mapActivityEntityToDomainObject(ActivityEntity activityEntity) {
-        return TransferActivity.builder()
-                .id(ActivityId.of(activityEntity.getId()))
-                .ownerCardId(
-                        LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()))
-                .sourceCardId(
-                        LoyaltyCardId.of(activityEntity.getSourceLoyaltyCardId()))
-                .targetCardId(
-                        LoyaltyCardId.of(activityEntity.getTargetLoyaltyCardId()))
-                .timestamp(activityEntity.getTimestamp())
-                .points(Points.of(activityEntity.getPoints()))
-                .build();
+        return activityFactory.getInstance(activityEntity);
     }
 
     public ActivityEntity mapDomainObjectToActivityEntity(Activity activity) {
