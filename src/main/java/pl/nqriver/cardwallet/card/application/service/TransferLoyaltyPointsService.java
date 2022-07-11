@@ -27,9 +27,9 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
     @Override
     public void transferLoyaltyPoints(TransferLoyaltyPointsCommand command) {
         log.info("Transfer Service: Transfer started");
-        LoyaltyCard sourceCard = loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(
+        LoyaltyCard sourceCard = loadLoyaltyCardPort.loadLoyaltyCardWithoutActivities(
                 command.getSourceCardId());
-        LoyaltyCard targetCard = loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(
+        LoyaltyCard targetCard = loadLoyaltyCardPort.loadLoyaltyCardWithoutActivities(
                 command.getTargetCardId());
 
         LoyaltyCardId sourceCardId = sourceCard.getId().orElseThrow(() -> new IllegalStateException("Source card ID is empty"));
