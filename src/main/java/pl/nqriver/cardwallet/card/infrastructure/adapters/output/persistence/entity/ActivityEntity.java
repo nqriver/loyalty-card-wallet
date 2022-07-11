@@ -1,4 +1,4 @@
-package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,12 +1,12 @@
-package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.mapper;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.domain.*;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;

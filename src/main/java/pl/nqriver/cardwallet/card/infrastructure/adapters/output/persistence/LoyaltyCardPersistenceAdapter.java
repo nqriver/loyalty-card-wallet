@@ -1,4 +1,4 @@
-package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,13 +7,13 @@ import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardComm
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardActivitiesPort;
 import pl.nqriver.cardwallet.card.application.ports.output.LoyaltyCardPort;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.ActivityEntity;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.entity.LoyaltyCardEntity;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.exception.ResourceNotFoundException;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.mapper.ActivityMapper;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.mapper.LoyaltyCardMapper;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.repository.ActivityRepository;
-import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistance.repository.LoyaltyCardRepository;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.exception.ResourceNotFoundException;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.mapper.ActivityMapper;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.mapper.LoyaltyCardMapper;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository.ActivityRepository;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository.LoyaltyCardRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
