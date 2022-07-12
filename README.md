@@ -5,7 +5,8 @@
 * [General info](#general-info)
 * [Status](#status)
 * [Technologies](#technologies)
-* [How to run](#How to run)
+* [How to run](#how-to-run)
+* [Docs](#docs)  
 * [Requirements](#requirements)
 
 
@@ -57,6 +58,15 @@ $ docker-compose build
 ```
 $ docker-compose up
 ```
+
+
+## Docs
+After following above steps go to the endpoint [swagger-docs](http://localhost:8080/swagger-ui/) to view the REST API docs.
+Domain documentation is available after generating javadocs for domain package.
+
+Something similar to this should appear:
+![docs](media/swagger-api.png)
+
 
 ## Requirements
 
