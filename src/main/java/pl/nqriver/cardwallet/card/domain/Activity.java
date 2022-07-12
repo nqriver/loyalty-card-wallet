@@ -8,6 +8,10 @@ import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import java.time.LocalDateTime;
 
 
+/**
+ * Activity owned by {@link LoyaltyCard} between source and target {@link LoyaltyCard}s
+ * The id of owner card must be equal to either target or source card id.
+ */
 public abstract class Activity {
 
     @Getter
@@ -33,7 +37,8 @@ public abstract class Activity {
 
     public abstract ActivityType getTypeOfActivity();
 
-    protected Activity(ActivityId id,
+    protected Activity(
+                    ActivityId id,
                     @NonNull LocalDateTime timestamp,
                     @NonNull LoyaltyCardId ownerCardId,
                     LoyaltyCardId targetCardId,

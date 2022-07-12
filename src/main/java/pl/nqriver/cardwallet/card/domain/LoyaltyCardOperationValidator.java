@@ -1,9 +1,12 @@
 package pl.nqriver.cardwallet.card.domain;
 
-import java.time.LocalDateTime;
 import java.util.function.Function;
 
-public interface LoyaltyCardOperationValidator extends Function<LoyaltyCard, LoyaltyCardOperationValidator.OperationValidationResult> {
+/**
+ * Validator for loyalty card operations. It allows to combine validation criteria
+ */
+public interface LoyaltyCardOperationValidator
+        extends Function<LoyaltyCard, LoyaltyCardOperationValidator.OperationValidationResult> {
 
     static LoyaltyCardOperationValidator isCardNotExpired() {
         return loyaltyCard -> loyaltyCard.isValid() ?
