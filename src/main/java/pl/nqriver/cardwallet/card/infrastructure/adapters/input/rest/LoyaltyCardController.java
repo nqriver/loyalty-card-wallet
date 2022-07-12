@@ -35,9 +35,11 @@ public class LoyaltyCardController {
         return ResponseEntity.ok(balanceModelAssembler.toModel(facade.getBalance(loyaltyCardId)));
     }
 
-    @ApiOperation(value = "Retrieves the current points balance of a loyalty card")
+    @ApiOperation(value = "Creates the new loyalty card with provided unique email")
     @PostMapping("")
-    public ResponseEntity<EntityModel<LoyaltyCardResponse>> setUpLoyaltyCard(@RequestBody @Valid final CreateLoyaltyCardRequest request) {
+    public ResponseEntity<EntityModel<LoyaltyCardResponse>> setUpLoyaltyCard(
+            @RequestBody @Valid final CreateLoyaltyCardRequest request) {
+
         LoyaltyCardResponse loyaltyCardResponse = facade.create(request);
         return ResponseEntity
                 .created(

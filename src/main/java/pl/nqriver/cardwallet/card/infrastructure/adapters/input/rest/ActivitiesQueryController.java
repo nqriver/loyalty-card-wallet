@@ -28,7 +28,7 @@ public class ActivitiesQueryController {
 
     @ApiOperation(value = "Retrieves the window of activities of given period or all activities if no dates are given")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("card/{id}/activities")
+    @GetMapping("cards/{id}/activities")
     public CollectionModel<EntityModel<ActivityResponse>> getActivities(
             @PathVariable("id") Long loyaltyCardId,
             @RequestParam(required = false) Optional<LocalDateTime> since,
@@ -41,7 +41,7 @@ public class ActivitiesQueryController {
 
     @ApiOperation(value = "Retrieves the window of expenditures/outgoings of given period or all expenditures if no dates are given")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("card/{id}/activities/incomings")
+    @GetMapping("cards/{id}/activities/incomings")
     public CollectionModel<EntityModel<ActivityResponse>> getIncomings(
             @PathVariable("id") Long loyaltyCardId,
             @RequestParam(required = false) Optional<LocalDateTime> since,
@@ -54,7 +54,7 @@ public class ActivitiesQueryController {
 
     @ApiOperation(value = "Retrieves the window of incomings/revenues of given period or all incomings if no dates are given")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("card/{id}/activities/outgoings")
+    @GetMapping("cards/{id}/activities/outgoings")
     public CollectionModel<EntityModel<ActivityResponse>> getOutgoings(
             @PathVariable("id") Long loyaltyCardId,
             @RequestParam(required = false) Optional<LocalDateTime> since,
