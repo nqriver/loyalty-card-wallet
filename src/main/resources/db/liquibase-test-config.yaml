@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/001-create-loyalty-card-table.sql
+
+  - include:
+      file: db/changelog/002-create-activities-table.sql
+
+  - include:
+      file: db/changelog/003-add-custom-email-domain.sql
+
+  - include:
+      file: db/changelog/004-update-loyalty-card-table.sql
+
+  - include:
+      file: db/changelog/005-add-constraints-to-loyalty-card-table.sql
+
+  - include:
+      file: db/changelog/006-add-checks-to-activity-table.sql
+
+  - include:
+      file: db/test-data/insert-test-data.sql

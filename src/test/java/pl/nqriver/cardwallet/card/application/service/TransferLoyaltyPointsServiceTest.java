@@ -105,7 +105,12 @@ class TransferLoyaltyPointsServiceTest {
         BDDMockito.given(card.getId())
                 .willReturn(Optional.of(cardId));
 
+        BDDMockito.given(loadLoyaltyCardPort.loadLoyaltyCardWithoutActivities(eq(cardId)))
+                .willReturn(card);
         BDDMockito.given(loadLoyaltyCardPort.loadLoyaltyCardWithAllActivities(eq(cardId)))
+                .willReturn(card);
+
+        BDDMockito.given(loadLoyaltyCardPort.loadLoyaltyCardWithActivitiesOfPeriod(eq(cardId), any(), any()))
                 .willReturn(card);
 
         return card;
