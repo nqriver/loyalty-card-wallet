@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.AbstractPersistenceIntegrationTest;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
 
 import java.time.LocalDateTime;

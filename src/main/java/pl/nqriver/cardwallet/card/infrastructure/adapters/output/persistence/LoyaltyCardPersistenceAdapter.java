@@ -23,7 +23,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActivitiesPort {
+class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActivitiesPort {
 
     private static final String CARD_NOT_FOUND_FORMAT = "Loyalty card of id: %d cannot be found";
 
@@ -59,15 +59,16 @@ public class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCa
 
         log.debug("Persistence adapter: Getting deposit and withdrawal balance between dates {} - {} of loyalty card with id: {}",
                 since, until, loyaltyCardId);
-        Long pointsDepositBalance = getValueElseZero
-                (activityRepository.getPointsDepositBalanceUntil(loyaltyCardId, since));
-        Long pointsWithdrawalBalance = getValueElseZero(
-                activityRepository.getPointsWithdrawalBalanceUntil(loyaltyCardId, since));
+
+        Long depositedPointsOutOfWindow = getValueElseZero
+                (activityRepository.getPointsDepositBalanceExcludingPeriodOf(loyaltyCardId, since, until));
+        Long withdrawnPointsOutOfWindow = getValueElseZero
+                (activityRepository.getPointsWithdrawalBalanceExcludingPeriodOf(loyaltyCardId, since, until));
 
         return loyaltyCardMapper.mapToDomain(loyaltyCardEntity,
                 activities,
-                pointsWithdrawalBalance,
-                pointsDepositBalance);
+                withdrawnPointsOutOfWindow,
+                depositedPointsOutOfWindow);
     }
 
 

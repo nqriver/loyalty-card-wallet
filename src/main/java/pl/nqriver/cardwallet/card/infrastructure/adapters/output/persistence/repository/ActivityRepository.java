@@ -58,6 +58,30 @@ public interface ActivityRepository extends JpaRepository<ActivityEntity, Long> 
     @Query(
             "select sum(ae.points) from ActivityEntity ae " +
                     "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
+                    "and ae.isIncoming = false " +
+                    "and ae.timestamp not between :since and :until"
+    )
+    Long getPointsWithdrawalBalanceExcludingPeriodOf(
+            @Param("loyaltyCardId") Long loyaltyCardId,
+            @Param("since") LocalDateTime since,
+            @Param("until") LocalDateTime until
+    );
+
+    @Query(
+            "select sum(ae.points) from ActivityEntity ae " +
+                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
+                    "and ae.isIncoming = true " +
+                    "and ae.timestamp not between :since and :until"
+    )
+    Long getPointsDepositBalanceExcludingPeriodOf(
+            @Param("loyaltyCardId") Long loyaltyCardId,
+            @Param("since") LocalDateTime since,
+            @Param("until") LocalDateTime until
+    );
+
+    @Query(
+            "select sum(ae.points) from ActivityEntity ae " +
+                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
                     "and ae.isIncoming = false "
     )
     Long getPointsWithdrawalBalance(

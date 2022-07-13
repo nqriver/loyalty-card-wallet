@@ -1,4 +1,4 @@
-package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository;
+package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence;
 
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;

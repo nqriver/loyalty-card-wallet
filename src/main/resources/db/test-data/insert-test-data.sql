@@ -21,8 +21,8 @@ VALUES
 
 
 --        transfer of 20 points from card of id 2 to card of id 1
-(current_timestamp - interval '1 year', 1, 2, 1, 20, true),
-(current_timestamp - interval '1 year', 2, 2, 1, 20, false),
+(current_timestamp + interval '1 year', 1, 2, 1, 20, true),
+(current_timestamp + interval '1 year', 2, 2, 1, 20, false),
 
 --        transfer of 50 points from card of id 2 to card of id 1
 (current_timestamp + interval '3 year', 1, 2, 1, 50, true),

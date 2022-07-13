@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.AbstractPersistenceIntegrationTest;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
 
 import javax.transaction.Transactional;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This test relays on pre-inserted test data which can be found under resources/db/test-data/insert-test-data.sql
  */
 @AutoConfigureTestEntityManager
-class LoyaltyCardRepositoryTest extends AbstractPersistenceIntegrationTest{
+class LoyaltyCardRepositoryTest extends AbstractPersistenceIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
