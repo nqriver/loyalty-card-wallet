@@ -1,10 +1,6 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import pl.nqriver.cardwallet.card.domain.LoyaltyCard;
-import pl.nqriver.cardwallet.card.domain.Points;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
