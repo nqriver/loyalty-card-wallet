@@ -31,8 +31,8 @@ public class ActivityMapper {
                 activity.getId() == null ? null : activity.getId().getValue(),
                 activity.getTimestamp(),
                 activity.getOwnerCardId().getValue(),
-                activity.getSourceCardId().getValue(),
-                activity.getTargetCardId().getValue(),
+                activity.getSourceCardId() == null ? null : activity.getSourceCardId().getValue(),
+                activity.getTargetCardId() == null ? null : activity.getTargetCardId().getValue(),
                 activity.getPoints().getAmount().longValue(),
                 activity.getTypeOfActivity().equals(ActivityType.INCOMING)
         );
