@@ -3,10 +3,14 @@ package pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import pl.nqriver.cardwallet.card.application.ports.input.command.CreateCardCommand;
 import pl.nqriver.cardwallet.card.domain.*;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository.ActivityRepository;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository.LoyaltyCardRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
+
+/**
+ * This test relays on pre-inserted test data which can be found under resources/db/test-data/insert-test-data.sql
+ */
 class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTest {
 
     @Autowired
@@ -22,6 +31,10 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
 
     @Autowired
     private ActivityRepository activityRepository;
+
+
+    @Autowired
+    private LoyaltyCardRepository loyaltyCardRepository;
 
     @Test
     void shouldLoadLoyaltyCardWithAllActivities() {
@@ -141,10 +154,52 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
     }
 
     @Test
-    void createLoyaltyCard() {
+    void shouldCreateLoyaltyCard() {
+        // given
+        String newCardHolder = "email7@email.email";
+        CreateCardCommand command = CreateCardCommand.builder().holderEmail(newCardHolder).build();
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMonths(10);
+
+        // when
+        LoyaltyCard createdLoyaltyCard = adapter.createLoyaltyCard(command, createdAt, expiresAt);
+
+        // then
+
+        assertThat(createdLoyaltyCard).isNotNull();
+        assertThat(createdLoyaltyCard.getId()).isPresent();
+        assertThat(createdLoyaltyCard.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(createdLoyaltyCard.getExpiresAt()).isEqualTo(expiresAt);
+        assertThat(createdLoyaltyCard.getBalance()).isEqualTo(Balance.of(Points.of(0L), Points.of(0L)));
+        assertThat(createdLoyaltyCard.getActivityWindow().getActivities()).isEmpty();
     }
 
     @Test
-    void updateExpirationDate() {
+    void shouldNotCreateLoyaltyCardWithTakenEmail() {
+        // given
+        String alreadyRegisteredEmail = "firstemail@email.com";
+        CreateCardCommand command = CreateCardCommand.builder().holderEmail(alreadyRegisteredEmail).build();
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMonths(10);
+
+        // when
+        assertThatCode(() -> adapter.createLoyaltyCard(command, createdAt, expiresAt)).isInstanceOf(
+                DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void shouldUpdateExpirationDate() {
+        // given
+        Long idOfCardUnderTest = 1L;
+        LocalDateTime initialExpirationDate = loyaltyCardRepository.findById(idOfCardUnderTest).get().getExpiresAt();
+        LocalDateTime newExpirationDate = initialExpirationDate.plusYears(10);
+
+        // when
+        adapter.updateExpirationDate(LoyaltyCardId.of(idOfCardUnderTest), newExpirationDate);
+        LoyaltyCardEntity updatedActivity = loyaltyCardRepository.findById(idOfCardUnderTest).get();
+
+        // then
+        assertThat(updatedActivity.getId()).isEqualTo(idOfCardUnderTest);
+        assertThat(updatedActivity.getExpiresAt()).isEqualTo(newExpirationDate);
     }
 }

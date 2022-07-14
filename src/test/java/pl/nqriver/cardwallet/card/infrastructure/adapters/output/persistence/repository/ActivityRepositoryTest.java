@@ -84,10 +84,10 @@ class ActivityRepositoryTest extends AbstractPersistenceIntegrationTest {
     }
 
     @Test
-    void shouldRetrieveDepositBalanceOfLoyaltyCardForPeriod() {
+    void shouldRetrieveDepositBalanceOfLoyaltyCardUntil() {
         // given
         Long idOfCardUnderTest = 1L;
-        LocalDateTime untilDate = LocalDateTime.now();
+        LocalDateTime untilDate = LocalDateTime.now().plusYears(2);
 
         // when
         Long pointsDepositBalance = activityRepository.getPointsDepositBalanceUntil(idOfCardUnderTest, untilDate);
@@ -97,10 +97,10 @@ class ActivityRepositoryTest extends AbstractPersistenceIntegrationTest {
     }
 
     @Test
-    void shouldRetrieveWithdrawalBalanceOfLoyaltyCardForPeriod() {
+    void shouldRetrieveWithdrawalBalanceOfLoyaltyCardUntil() {
         // given
         Long idOfCardUnderTest = 2L;
-        LocalDateTime untilDate = LocalDateTime.now();
+        LocalDateTime untilDate = LocalDateTime.now().plusYears(2);
         // when
         Long pointsDepositBalance = activityRepository.getPointsWithdrawalBalanceUntil(idOfCardUnderTest, untilDate);
 

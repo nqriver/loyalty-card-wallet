@@ -1,13 +1,13 @@
 --liquibase formatted sql
 --changeset nqriver:7
 
-INSERT INTO loyalty_cards(id, holder_email, creation_time, expiration_time)
-VALUES (1, 'firstemail@email.com', default, default),
-       (2, 'secondemail@email.com', default, default),
-       (3, 'thirdemail@email.com', default, default),
-       (4, 'forth@email.com', default, default),
-       (5, 'f5th@email.com', default, default),
-       (6, 's6th@email.com', default, default);
+INSERT INTO loyalty_cards(holder_email, creation_time, expiration_time)
+VALUES ('firstemail@email.com', default, default),
+       ('secondemail@email.com', default, default),
+       ('thirdemail@email.com', default, default),
+       ('forth@email.com', default, default),
+       ('f5th@email.com', default, default),
+       ('s6th@email.com', default, default);
 
 
 

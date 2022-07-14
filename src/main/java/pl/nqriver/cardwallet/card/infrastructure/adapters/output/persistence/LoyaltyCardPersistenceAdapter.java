@@ -15,6 +15,7 @@ import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.map
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository.ActivityRepository;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.repository.LoyaltyCardRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -109,6 +110,7 @@ class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActiv
 
     }
 
+    @Transactional
     @Override
     public LoyaltyCard createLoyaltyCard(CreateCardCommand command,
                                          LocalDateTime createdAt,
@@ -121,6 +123,7 @@ class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActiv
                 0L, 0L);
     }
 
+    @Transactional
     @Override
     public void updateExpirationDate(LoyaltyCard.LoyaltyCardId id, LocalDateTime newExpirationDate) {
         Long idValue = id.getValue();
