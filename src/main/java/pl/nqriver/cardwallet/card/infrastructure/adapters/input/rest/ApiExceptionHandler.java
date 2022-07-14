@@ -1,9 +1,9 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -49,5 +49,19 @@ public class ApiExceptionHandler {
 
         final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errorMap);
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataViolations(DataIntegrityViolationException exception) {
+        String rootMsg = exception.getRootCause().getMessage();
+        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.CONFLICT, rootMsg, Collections.emptyList());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleAnyException(Exception exception) {
+        String rootMsg = exception.getMessage();
+        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.CONFLICT, rootMsg, Collections.emptyList());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
