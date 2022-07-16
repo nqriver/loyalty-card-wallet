@@ -83,17 +83,29 @@ public class LoyaltyCard {
 
 
     /**
-     * Calculates total balance of loyalty card. Returns a pure points value with no details.
+     * Calculates total balance of loyalty card. Returns a pure points value with no details about neither incomings or outgoings.
+     *
      * @return overall balance of loyalty card
      */
-    public Points calculateBalance() {
-        return Points.add(activityWindow.calculateBalance(), baselineBalance.getTotalBalance());
+    public Points calculateTotalBalance() {
+        return this.calculateBalance().getTotalBalance();
     }
 
 
     /**
+     * Provides meaningful balance details such as income balance, expense balance and total balance encapsulated in
+     * one {@link Balance} instance
+     *
+     * @return instance of {@link Balance}
+     */
+    public Balance calculateBalance() {
+        return this.baselineBalance.combine(activityWindow.calculateBalance());
+    }
+
+    /**
      * Tries to withdraw a certain amount of points from this loyalty card.
      * If operation succeeds, creates a new {@link WithdrawalActivity} and stores it in activity window.
+     *
      * @return Enum type of {@link OperationValidationResult}.
      */
     public OperationValidationResult withdraw(Points points) {
@@ -210,18 +222,8 @@ public class LoyaltyCard {
         return holder.getEmail();
     }
 
-    /**
-     * Provides meaningful balance details such as income balance, expense balance and total balance
-     * @return instance of {@link Balance}
-     */
-    public Balance getBalance() {
-        Points deposited = Points.add(baselineBalance.getDepositBalance(), activityWindow.calculateIncomingBalance());
-        Points withdrawn = Points.add(baselineBalance.getWithdrawalBalance(), activityWindow.calculateOutgoingBalance());
-        return Balance.of(withdrawn, deposited);
-    }
-
     boolean canBeWithdrawn(Points points) {
-        return this.calculateBalance().isGreaterThanOrEqualTo(points);
+        return this.calculateTotalBalance().isGreaterThanOrEqualTo(points);
     }
 
     boolean isValid() {

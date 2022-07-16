@@ -32,4 +32,10 @@ public class Balance {
                 .depositBalance(deposited)
                 .build();
     }
+
+    public Balance combine(Balance balance) {
+        Points combinedWithdrawalPoints = Points.add(this.withdrawalBalance, balance.getWithdrawalBalance());
+        Points combinedDepositPoints = Points.add(this.depositBalance, balance.getDepositBalance());
+        return Balance.of(combinedWithdrawalPoints, combinedDepositPoints);
+    }
 }

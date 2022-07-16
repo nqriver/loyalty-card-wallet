@@ -26,7 +26,7 @@ public class LoyaltyCardQueryService implements GetCardBalanceQuery,
     @Override
     public Balance getCardBalance(LoyaltyCard.LoyaltyCardId id) {
         return loyaltyCardPort.loadLoyaltyCardWithoutActivities(id)
-                .getBalance();
+                .calculateBalance();
     }
 
     @Override

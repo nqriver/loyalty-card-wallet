@@ -13,22 +13,54 @@ public class ActivityWindow {
 
     private final List<Activity> activities;
 
+    /**
+     * Adds activity to instantiated Activity Window
+     * @param activity
+     */
+    public void addActivity(Activity activity) {
+        this.activities.add(activity);
+    }
+
+    private ActivityWindow(List<Activity> activities) {
+        this.activities = new ArrayList<>(activities);
+    }
+
+    /**
+     * Provides new instance of empty activity window
+     * @return
+     */
+    public static ActivityWindow emptyWindow() {
+        return new ActivityWindow(Collections.emptyList());
+    }
+
+
+    /**
+     * Creates activity window from {@link List} of given activities
+     *
+     * @param activities list of activities
+     * @return
+     */
+    public static ActivityWindow of(List<Activity> activities) {
+        return new ActivityWindow(activities);
+    }
+
 
     /**
      * Calculates total balance of this activity window
      * @return total balance
      */
-    public Points calculateBalance() {
+    public Balance calculateBalance() {
         Points incomeBalance = calculateIncomingBalance();
         Points outgoingBalance = calculateOutgoingBalance();
-        return Points.add(incomeBalance, outgoingBalance.negate());
+        return Balance.of(outgoingBalance, incomeBalance);
     }
+
 
     /**
      * Calculates balance of all outgoing activities within this activity window
      * @return withdrawal balance
      */
-    public Points calculateOutgoingBalance() {
+    private Points calculateOutgoingBalance() {
         return getBalanceOfActivityType(ActivityType.OUTGOING);
     }
 
@@ -37,7 +69,7 @@ public class ActivityWindow {
      * Calculates balance of all incoming activities within this activity window
      * @return deposit balance
      */
-    public Points calculateIncomingBalance() {
+    private Points calculateIncomingBalance() {
         return getBalanceOfActivityType(ActivityType.INCOMING);
     }
 
@@ -69,22 +101,6 @@ public class ActivityWindow {
                 .orElseThrow(IllegalStateException::new)
                 .getTimestamp();
 
-    }
-
-    public void addActivity(Activity activity) {
-        this.activities.add(activity);
-    }
-
-    private ActivityWindow(List<Activity> activities) {
-        this.activities = new ArrayList<>(activities);
-    }
-
-    public static ActivityWindow emptyWindow() {
-        return new ActivityWindow(Collections.emptyList());
-    }
-
-    public static ActivityWindow of(List<Activity> activities) {
-        return new ActivityWindow(activities);
     }
 
     public List<Activity> getActivities() {

@@ -53,7 +53,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
         assertThat(loyaltyCard.getActivityWindow().getActivities())
                 .hasSize(5);
 
-        assertThat(loyaltyCard.getBalance()).isEqualTo(
+        assertThat(loyaltyCard.calculateBalance()).isEqualTo(
                 Balance.of(Points.of(expectedTotalOutgoingBalance),
                         Points.of(expectedTotalIncomingBalance)));
     }
@@ -79,7 +79,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
 
         assertThat(loyaltyCard.getActivityWindow().calculateBalance()).isEqualTo(Points.of(120L));
 
-        assertThat(loyaltyCard.getBalance()).isEqualTo(
+        assertThat(loyaltyCard.calculateBalance()).isEqualTo(
                 Balance.of(Points.of(expectedTotalOutgoingBalance),
                         Points.of(expectedTotalIncomingBalance)));
 
@@ -104,7 +104,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
         assertThat(loyaltyCard.getActivityWindow().getActivities())
                 .isEmpty();
 
-        assertThat(loyaltyCard.getBalance()).isEqualTo(
+        assertThat(loyaltyCard.calculateBalance()).isEqualTo(
                 Balance.of(Points.of(expectedTotalOutgoingBalance),
                         Points.of(expectedTotalIncomingBalance)));
     }
@@ -170,7 +170,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
         assertThat(createdLoyaltyCard.getId()).isPresent();
         assertThat(createdLoyaltyCard.getCreatedAt()).isEqualTo(createdAt);
         assertThat(createdLoyaltyCard.getExpiresAt()).isEqualTo(expiresAt);
-        assertThat(createdLoyaltyCard.getBalance()).isEqualTo(Balance.of(Points.of(0L), Points.of(0L)));
+        assertThat(createdLoyaltyCard.calculateBalance()).isEqualTo(Balance.of(Points.of(0L), Points.of(0L)));
         assertThat(createdLoyaltyCard.getActivityWindow().getActivities()).isEmpty();
     }
 
