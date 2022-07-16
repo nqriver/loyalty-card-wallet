@@ -77,7 +77,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
         // then
         assertThat(loyaltyCard.getId()).isEqualTo(Optional.of(LoyaltyCardId.of(idOfCardUnderTest)));
 
-        assertThat(loyaltyCard.getActivityWindow().calculateBalance()).isEqualTo(Points.of(120L));
+        assertThat(loyaltyCard.getActivityWindow().calculateBalance()).isEqualTo(Balance.of(Points.of(0), Points.of(120L)));
 
         assertThat(loyaltyCard.calculateBalance()).isEqualTo(
                 Balance.of(Points.of(expectedTotalOutgoingBalance),
@@ -157,7 +157,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
     void shouldCreateLoyaltyCard() {
         // given
         String newCardHolder = "email7@email.email";
-        CreateCardCommand command = CreateCardCommand.builder().holderEmail(newCardHolder).build();
+        CreateCardCommand command = new CreateCardCommand(newCardHolder);
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiresAt = LocalDateTime.now().plusMonths(10);
 
@@ -178,7 +178,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
     void shouldNotCreateLoyaltyCardWithTakenEmail() {
         // given
         String alreadyRegisteredEmail = "firstemail@email.com";
-        CreateCardCommand command = CreateCardCommand.builder().holderEmail(alreadyRegisteredEmail).build();
+        CreateCardCommand command = new CreateCardCommand(alreadyRegisteredEmail);
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiresAt = LocalDateTime.now().plusMonths(10);
 

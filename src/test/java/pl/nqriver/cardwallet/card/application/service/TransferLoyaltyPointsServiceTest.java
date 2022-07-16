@@ -23,7 +23,7 @@ import static org.mockito.BDDMockito.*;
 
 class TransferLoyaltyPointsServiceTest {
 
-    public static final Points POINTS = Points.of(1);
+    public static final Points POINTS_TO_BE_TRANSFERRED = Points.of(1);
 
     private final LoyaltyCardPort loadLoyaltyCardPort = Mockito.mock(LoyaltyCardPort.class);
 
@@ -43,7 +43,7 @@ class TransferLoyaltyPointsServiceTest {
 
         givenWithdrawalFail(firstLoyaltyCard);
 
-        TransferLoyaltyPointsCommand command = new TransferLoyaltyPointsCommand(firstCardId, secondCardId, POINTS);
+        TransferLoyaltyPointsCommand command = new TransferLoyaltyPointsCommand(firstCardId, secondCardId, POINTS_TO_BE_TRANSFERRED);
 
         // when
         assertThatCode(() -> transferLoyaltyPointsService.transferLoyaltyPoints(command))
@@ -66,15 +66,15 @@ class TransferLoyaltyPointsServiceTest {
         givenWithdrawalSuccess(firstLoyaltyCard);
         givenDepositSuccess(secondLoyaltyCard);
 
-        TransferLoyaltyPointsCommand command = new TransferLoyaltyPointsCommand(firstCardId, secondCardId, POINTS);
+        TransferLoyaltyPointsCommand command = new TransferLoyaltyPointsCommand(firstCardId, secondCardId, POINTS_TO_BE_TRANSFERRED);
 
         // when
         assertThatCode(() -> transferLoyaltyPointsService.transferLoyaltyPoints(command))
                 .doesNotThrowAnyException();
 
         // then
-        then(secondLoyaltyCard).should().transferIn(eq(POINTS), eq(firstCardId));
-        then(firstLoyaltyCard).should().transferOut(eq(POINTS), eq(secondCardId));
+        then(secondLoyaltyCard).should().transferIn(eq(POINTS_TO_BE_TRANSFERRED), eq(firstCardId));
+        then(firstLoyaltyCard).should().transferOut(eq(POINTS_TO_BE_TRANSFERRED), eq(secondCardId));
         thenExpectCardActivitiesBeingUpdated(firstCardId, secondCardId);
 
     }

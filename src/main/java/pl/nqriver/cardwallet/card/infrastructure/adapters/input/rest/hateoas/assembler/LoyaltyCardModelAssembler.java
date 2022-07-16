@@ -21,10 +21,10 @@ public class LoyaltyCardModelAssembler implements RepresentationModelAssembler<L
     @Override
     public EntityModel<LoyaltyCardResponse> toModel(@NonNull LoyaltyCardResponse response) {
         return EntityModel.of(response,
-                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getId())).withRel("generalInfo"),
-                linkTo(methodOn(LoyaltyCardController.class).getBalance(response.getId())).withRel("balance"),
-                WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.getId(),
-                        Optional.of(response.getCreatedAt()),
+                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.id())).withRel("generalInfo"),
+                linkTo(methodOn(LoyaltyCardController.class).getBalance(response.id())).withRel("balance"),
+                WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.id(),
+                        Optional.of(response.createdAt()),
                         Optional.of(LocalDateTime.now()))).withRel("activities")
         );
     }

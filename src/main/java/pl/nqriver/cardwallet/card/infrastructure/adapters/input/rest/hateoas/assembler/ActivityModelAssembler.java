@@ -32,23 +32,23 @@ public class ActivityModelAssembler implements RepresentationModelAssembler<Acti
     @Override
     public @NonNull EntityModel<ActivityResponse> toModel(@NonNull ActivityResponse activity) {
         return EntityModel.of(activity,
-                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getBalance(activity.getOwnerCardId())).withRel("balance"),
+                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getBalance(activity.ownerCardId())).withRel("balance"),
                 WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class)
-                        .getActivities(activity.getOwnerCardId(),
-                                Optional.of(activity.getTimestamp().minusYears(1)),
-                                Optional.of(activity.getTimestamp()))).withSelfRel())
+                        .getActivities(activity.ownerCardId(),
+                                Optional.of(activity.timestamp().minusYears(1)),
+                                Optional.of(activity.timestamp()))).withSelfRel())
 
-                        .addIf(activity.getType().equalsIgnoreCase("incoming"), () ->
+                        .addIf(activity.type().equalsIgnoreCase("incoming"), () ->
                                 linkTo(methodOn(ActivitiesQueryController.class)
-                                        .getIncomings(activity.getOwnerCardId(),
-                                                Optional.of(activity.getTimestamp().minusYears(1)),
-                                                Optional.of(activity.getTimestamp())))
+                                        .getIncomings(activity.ownerCardId(),
+                                                Optional.of(activity.timestamp().minusYears(1)),
+                                                Optional.of(activity.timestamp())))
                                         .withRel("all incomings"))
-                        .addIf(activity.getType().equalsIgnoreCase("outgoing"), () ->
+                        .addIf(activity.type().equalsIgnoreCase("outgoing"), () ->
                                 linkTo(methodOn(ActivitiesQueryController.class)
-                                        .getOutgoings(activity.getOwnerCardId(),
-                                                Optional.of(activity.getTimestamp().minusYears(1)),
-                                                Optional.of(activity.getTimestamp())))
+                                        .getOutgoings(activity.ownerCardId(),
+                                                Optional.of(activity.timestamp().minusYears(1)),
+                                                Optional.of(activity.timestamp())))
                                         .withRel("all outgoings"));
     }
 }

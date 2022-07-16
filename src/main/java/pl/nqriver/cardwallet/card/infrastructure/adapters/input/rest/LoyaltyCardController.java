@@ -43,7 +43,7 @@ public class LoyaltyCardController {
         LoyaltyCardResponse loyaltyCardResponse = facade.create(request);
         return ResponseEntity
                 .created(
-                    linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(loyaltyCardResponse.getId())).toUri())
+                    linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(loyaltyCardResponse.id())).toUri())
                 .body(cardModelAssembler.toModel(loyaltyCardResponse));
     }
 

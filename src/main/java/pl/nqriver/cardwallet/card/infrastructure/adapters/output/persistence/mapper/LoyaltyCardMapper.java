@@ -44,7 +44,7 @@ public class LoyaltyCardMapper {
         LoyaltyCardEntity entity = new LoyaltyCardEntity();
         entity.setCreatedAt(createdAt);
         entity.setExpiresAt(expiresAt);
-        entity.setHolderEmail(command.getHolderEmail());
+        entity.setHolderEmail(command.holderEmail());
         return entity;
     }
 }

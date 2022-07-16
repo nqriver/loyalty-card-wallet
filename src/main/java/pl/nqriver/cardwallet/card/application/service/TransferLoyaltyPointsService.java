@@ -28,20 +28,20 @@ public class TransferLoyaltyPointsService implements TransferLoyaltyPointsUseCas
     public void transferLoyaltyPoints(TransferLoyaltyPointsCommand command) {
         log.info("Transfer Service: Transfer started");
         LoyaltyCard sourceCard = loadLoyaltyCardPort.loadLoyaltyCardWithoutActivities(
-                command.getSourceCardId());
+                command.sourceCardId());
         LoyaltyCard targetCard = loadLoyaltyCardPort.loadLoyaltyCardWithoutActivities(
-                command.getTargetCardId());
+                command.targetCardId());
 
         LoyaltyCardId sourceCardId = sourceCard.getId().orElseThrow(() -> new IllegalStateException("Source card ID is empty"));
         LoyaltyCardId targetCardId = targetCard.getId().orElseThrow(() -> new IllegalStateException("Target card ID is empty"));
 
-        Points transferPoints = command.getPoints();
+        Points transferPoints = command.points();
 
-        log.debug("Transfer Service: Withdrawing points from source loyalty card of id {}", command.getSourceCardId());
+        log.debug("Transfer Service: Withdrawing points from source loyalty card of id {}", command.sourceCardId());
         var withdrawalResult = sourceCard.transferOut(transferPoints, targetCardId);
         handleOperationResult(withdrawalResult);
 
-        log.debug("Transfer Service: Depositing points to target loyalty card of id {}", command.getTargetCardId());
+        log.debug("Transfer Service: Depositing points to target loyalty card of id {}", command.targetCardId());
         var depositResult = targetCard.transferIn(transferPoints, sourceCardId);
         handleOperationResult(depositResult);
 

@@ -7,8 +7,7 @@ import lombok.*;
  */
 
 @Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class Balance {
 
@@ -21,16 +20,14 @@ public class Balance {
     /**
      * Static factory method to create balance instance
      * Calculates total balance from incoming and outgoing points and returns instance
+     *
      * @param withdrawn total outgoing points
      * @param deposited total incoming points
      * @return
      */
     public static Balance of(final Points withdrawn, final Points deposited) {
-        return Balance.builder()
-                .totalBalance(Points.subtract(deposited, withdrawn))
-                .withdrawalBalance(withdrawn)
-                .depositBalance(deposited)
-                .build();
+        Points totalPoints = Points.subtract(deposited, withdrawn);
+        return new Balance(totalPoints, withdrawn, deposited);
     }
 
     public Balance combine(Balance balance) {

@@ -10,15 +10,15 @@ import java.util.List;
 public abstract class ActivityRestMapper {
 
     public ActivityResponse toActivityResponse(Activity activity) {
-        return ActivityResponse.builder()
-                .id(activity.getId().getValue())
-                .ownerCardId(activity.getOwnerCardId().getValue())
-                .sourceCardId(activity.getSourceCardId().getValue())
-                .targetCardId(activity.getTargetCardId().getValue())
-                .timestamp(activity.getTimestamp())
-                .points(activity.getPoints().getAmount())
-                .type(activity.getTypeOfActivity().name())
-                .build();
+        return new ActivityResponse(
+                activity.getId().getValue(),
+                activity.getTimestamp(),
+                activity.getOwnerCardId().getValue(),
+                activity.getTargetCardId().getValue(),
+                activity.getSourceCardId().getValue(),
+                activity.getPoints().getAmount(),
+                activity.getTypeOfActivity().name()
+        );
     }
 
     public abstract List<ActivityResponse> toActivityResponseList(List<Activity> activityList);

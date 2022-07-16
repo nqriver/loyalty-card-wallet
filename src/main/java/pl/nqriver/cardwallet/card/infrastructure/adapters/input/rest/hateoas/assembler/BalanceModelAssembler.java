@@ -21,9 +21,9 @@ public class BalanceModelAssembler implements RepresentationModelAssembler<Balan
     @Override
     public EntityModel<BalanceResponse> toModel(@NonNull BalanceResponse response) {
         return EntityModel.of(response,
-                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.getLoyaltyCardId())).withRel("generalInfo"),
-                linkTo(methodOn(LoyaltyCardController.class).getBalance(response.getLoyaltyCardId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.getLoyaltyCardId(),
+                WebMvcLinkBuilder.linkTo(methodOn(LoyaltyCardController.class).getGeneralInfo(response.loyaltyCardId())).withRel("generalInfo"),
+                linkTo(methodOn(LoyaltyCardController.class).getBalance(response.loyaltyCardId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(methodOn(ActivitiesQueryController.class).getActivities(response.loyaltyCardId(),
                         Optional.empty(),
                         Optional.of(LocalDateTime.now()))).withRel("activities"));
     }
