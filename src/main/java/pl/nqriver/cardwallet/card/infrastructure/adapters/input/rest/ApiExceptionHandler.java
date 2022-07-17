@@ -11,7 +11,6 @@ import pl.nqriver.cardwallet.card.application.service.OperationTerminatedWithFai
 import pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response.ApiErrorResponse;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.exception.ResourceNotFoundException;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,20 +20,20 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(OperationTerminatedWithFailureException.class)
     public ResponseEntity<?> handleOperationFailureException(OperationTerminatedWithFailureException exception) {
-        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage(),
+        final ApiErrorResponse errorResponse = ApiErrorResponse.withSimpleMessage(HttpStatus.BAD_REQUEST,
                 exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<?> handleIllegalStateException(IllegalStateException exception) {
-        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), exception.getMessage());
+        final ApiErrorResponse errorResponse = ApiErrorResponse.withSimpleMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception) {
-        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), Collections.emptyList());
+        final ApiErrorResponse errorResponse = ApiErrorResponse.withSimpleMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
@@ -47,21 +46,22 @@ public class ApiExceptionHandler {
                 .collect(Collectors.toMap(error -> ((FieldError) error).getField(),
                         objectError -> Objects.isNull(objectError.getDefaultMessage()) ? "" : objectError.getDefaultMessage()));
 
-        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errorMap);
+        final ApiErrorResponse errorResponse =
+                ApiErrorResponse.withMapOfErrors(HttpStatus.BAD_REQUEST, exception.getMessage(), errorMap);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataViolations(DataIntegrityViolationException exception) {
         String rootMsg = exception.getRootCause().getMessage();
-        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.CONFLICT, rootMsg, Collections.emptyList());
+        final ApiErrorResponse errorResponse = ApiErrorResponse.withSimpleMessage(HttpStatus.CONFLICT, rootMsg);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleAnyException(Exception exception) {
         String rootMsg = exception.getMessage();
-        final ApiErrorResponse errorResponse = new ApiErrorResponse(HttpStatus.CONFLICT, rootMsg, Collections.emptyList());
+        final ApiErrorResponse errorResponse = ApiErrorResponse.withSimpleMessage(HttpStatus.CONFLICT, rootMsg);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

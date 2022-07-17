@@ -1,10 +1,11 @@
 package pl.nqriver.cardwallet.card.infrastructure.adapters.input.rest.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 @Getter
@@ -16,31 +17,31 @@ public class ApiErrorResponse {
 
     private final String message;
 
-    private final List<String> errors;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private final Map<String, String> errors;
 
-    public ApiErrorResponse(final HttpStatus status, final String message, final List<String> errors) {
+
+    public static ApiErrorResponse withMapOfErrors(final HttpStatus status,
+                                                   final String message,
+                                                   final Map<String, String> errors) {
+        return new ApiErrorResponse(status, message, errors);
+    }
+
+    public static ApiErrorResponse withSimpleMessage(final HttpStatus status, final String message) {
+        return new ApiErrorResponse(status, message);
+    }
+
+
+    private ApiErrorResponse(final HttpStatus status, final String message, final Map<String, String> errors) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.message = message;
         this.errors = errors;
     }
 
-    public ApiErrorResponse(final HttpStatus status, final String message, final Map<String, String> errors) {
-        this(status, message, convertMapOfErrorsToList(errors));
-    }
 
-    public ApiErrorResponse(final HttpStatus status, final String message, final String error) {
-        this.timestamp = LocalDateTime.now();
-        this.status = status;
-        this.message = message;
-        this.errors = List.of(error);
-    }
-
-    private static List<String> convertMapOfErrorsToList(Map<String, String> errors) {
-        return errors.entrySet()
-                .stream()
-                .map(e -> String.format("%s : %s", e.getKey(), e.getValue()))
-                .toList();
+    private ApiErrorResponse(final HttpStatus status, final String message) {
+        this(status, message, Collections.emptyMap());
     }
 
 }
