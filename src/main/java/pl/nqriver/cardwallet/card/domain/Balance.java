@@ -1,14 +1,12 @@
 package pl.nqriver.cardwallet.card.domain;
 
-import lombok.*;
+import lombok.Value;
 
 /**
  * Complex representation of loyalty card balance
  */
 
 @Value
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter
 public class Balance {
 
     private final Points totalBalance;
@@ -30,9 +28,16 @@ public class Balance {
         return new Balance(totalPoints, withdrawn, deposited);
     }
 
-    public Balance combine(Balance balance) {
-        Points combinedWithdrawalPoints = Points.add(this.withdrawalBalance, balance.getWithdrawalBalance());
-        Points combinedDepositPoints = Points.add(this.depositBalance, balance.getDepositBalance());
+
+    /**
+     * Combines this Balance instance with given balance by summing up incoming and outgoing balances
+     *
+     * @param other balance instance to combine with this instance.
+     * @return new instance of combined balance
+     */
+    public Balance combine(Balance other) {
+        Points combinedWithdrawalPoints = Points.add(this.withdrawalBalance, other.getWithdrawalBalance());
+        Points combinedDepositPoints = Points.add(this.depositBalance, other.getDepositBalance());
         return Balance.of(combinedWithdrawalPoints, combinedDepositPoints);
     }
 }

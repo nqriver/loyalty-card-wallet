@@ -1,8 +1,6 @@
 package pl.nqriver.cardwallet.card.domain;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
 import java.time.LocalDateTime;

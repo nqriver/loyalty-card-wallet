@@ -117,12 +117,7 @@ public class LoyaltyCard {
         if (operationResult.otherThan(OperationValidationResult.SUCCESS)) {
             return operationResult;
         }
-        Activity withdrawal = WithdrawalActivity.builder()
-                .timestamp(LocalDateTime.now())
-                .ownerCardId(this.id)
-                .points(points)
-                .build();
-
+        Activity withdrawal = WithdrawalActivity.newWithdrawal(LocalDateTime.now(), this.id, points);
         activityWindow.addActivity(withdrawal);
         return operationResult;
     }
@@ -145,14 +140,7 @@ public class LoyaltyCard {
             return operationResult;
         }
 
-        Activity withdrawal = TransferActivity.builder()
-                .sourceCardId(this.id)
-                .ownerCardId(this.id)
-                .targetCardId(targetCardId)
-                .timestamp(LocalDateTime.now())
-                .points(points)
-                .build();
-
+        Activity withdrawal = TransferActivity.newTransferOut(LocalDateTime.now(), points, targetCardId, this.id);
         activityWindow.addActivity(withdrawal);
         return operationResult;
     }
@@ -170,11 +158,7 @@ public class LoyaltyCard {
             return operationResult;
         }
 
-        Activity deposit = DepositActivity.builder()
-                .timestamp(LocalDateTime.now())
-                .ownerCardId(this.id)
-                .points(points)
-                .build();
+        Activity deposit = DepositActivity.newDeposit(LocalDateTime.now(), this.id, points);
 
         this.activityWindow.addActivity(deposit);
         return operationResult;
@@ -195,14 +179,7 @@ public class LoyaltyCard {
             return result;
         }
 
-        Activity deposit = TransferActivity.builder()
-                .sourceCardId(sourceCardId)
-                .ownerCardId(this.id)
-                .targetCardId(this.id)
-                .timestamp(LocalDateTime.now())
-                .points(points)
-                .build();
-
+        Activity deposit = TransferActivity.newTransferIn(LocalDateTime.now(), points, this.id, sourceCardId);
         this.activityWindow.addActivity(deposit);
         return result;
     }

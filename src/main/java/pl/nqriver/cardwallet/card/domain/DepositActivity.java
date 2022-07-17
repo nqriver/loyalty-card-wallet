@@ -1,6 +1,5 @@
 package pl.nqriver.cardwallet.card.domain;
 
-import lombok.Builder;
 import lombok.NonNull;
 import pl.nqriver.cardwallet.card.domain.LoyaltyCard.LoyaltyCardId;
 
@@ -11,10 +10,9 @@ import java.time.LocalDateTime;
  * Source card id is set to null.
  */
 
-public class DepositActivity extends Activity {
+public final class DepositActivity extends Activity {
 
 
-    @Builder
     public DepositActivity(
             ActivityId id,
             @NonNull LocalDateTime timestamp,
@@ -22,6 +20,19 @@ public class DepositActivity extends Activity {
             @NonNull Points points) {
 
         super(id, timestamp, ownerCardId, ownerCardId, null, points);
+    }
+
+    static DepositActivity newDeposit(LocalDateTime timestamp,
+                                      LoyaltyCardId ownerCardId,
+                                      Points points) {
+        return new DepositActivity(null, timestamp, ownerCardId, points);
+    }
+
+    public static DepositActivity of(ActivityId id,
+                                     LocalDateTime timestamp,
+                                     LoyaltyCardId ownerCardId,
+                                     Points points) {
+        return new DepositActivity(id, timestamp, ownerCardId, points);
     }
 
     @Override

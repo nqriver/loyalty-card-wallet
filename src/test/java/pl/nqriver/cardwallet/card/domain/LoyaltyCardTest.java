@@ -209,22 +209,22 @@ class LoyaltyCardTest {
     private ActivityWindow givenActivityWindowForOwnerCardOfId(LoyaltyCardId owner) {
         ActivityWindow window = ActivityWindow.of(
                 List.of(
-                        WithdrawalActivity.builder()
-                                .id(Activity.ActivityId.of(1L))
-                                .ownerCardId(owner)
-                                .points(Points.of(10L))
-                                .timestamp(LocalDateTime.now())
-                                .build(),
+                        WithdrawalActivity.of(
+                                Activity.ActivityId.of(1L),
+                                LocalDateTime.now(),
+                                owner,
+                                Points.of(10L)
+                        ),
 
-                        TransferActivity.builder()
-                                .id(Activity.ActivityId.of(2L))
-                                .sourceCardId(LoyaltyCardId.of(2L))
-                                .targetCardId(LoyaltyCardId.of(1L))
-                                .ownerCardId(owner)
-                                .points(Points.of(20L))
-                                .timestamp(LocalDateTime.now())
-                                .build())
-        );
+                        TransferActivity.of(
+                                Activity.ActivityId.of(2L),
+                                LocalDateTime.now(),
+                                Points.of(20L),
+                                owner,
+                                LoyaltyCardId.of(1L),
+                                LoyaltyCardId.of(2L)
+
+                        )));
         return window;
     }
 }

@@ -18,35 +18,32 @@ public class ActivityFactory {
     }
 
     private DepositActivity getDepositActivityInstance(ActivityEntity activityEntity) {
-        return DepositActivity.builder()
-                .id(ActivityId.of(activityEntity.getId()))
-                .ownerCardId(LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()))
-                .points(Points.of(activityEntity.getPoints()))
-                .timestamp(activityEntity.getTimestamp())
-                .build();
+        return DepositActivity.of(
+                ActivityId.of(activityEntity.getId()),
+                activityEntity.getTimestamp(),
+                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()),
+                Points.of(activityEntity.getPoints())
+        );
     }
 
     private TransferActivity getTransferActivityInstance(ActivityEntity activityEntity) {
-        return TransferActivity.builder()
-                .id(ActivityId.of(activityEntity.getId()))
-                .ownerCardId(
-                        LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()))
-                .sourceCardId(
-                        LoyaltyCardId.of(activityEntity.getSourceLoyaltyCardId()))
-                .targetCardId(
-                        LoyaltyCardId.of(activityEntity.getTargetLoyaltyCardId()))
-                .timestamp(activityEntity.getTimestamp())
-                .points(Points.of(activityEntity.getPoints()))
-                .build();
+        return TransferActivity.of(
+                ActivityId.of(activityEntity.getId()),
+                activityEntity.getTimestamp(),
+                Points.of(activityEntity.getPoints()),
+                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()),
+                LoyaltyCardId.of(activityEntity.getTargetLoyaltyCardId()),
+                LoyaltyCardId.of(activityEntity.getSourceLoyaltyCardId())
+        );
     }
 
     private WithdrawalActivity getWithdrawalActivityInstance(ActivityEntity activityEntity) {
-        return WithdrawalActivity.builder()
-                .id(ActivityId.of(activityEntity.getId()))
-                .ownerCardId(LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()))
-                .points(Points.of(activityEntity.getPoints()))
-                .timestamp(activityEntity.getTimestamp())
-                .build();
+        return WithdrawalActivity.of(
+                ActivityId.of(activityEntity.getId()),
+                activityEntity.getTimestamp(),
+                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()),
+                Points.of(activityEntity.getPoints())
+        );
     }
 
     private TransactionType getTypeOfTransactionForActivityEntity(ActivityEntity activityEntity) {

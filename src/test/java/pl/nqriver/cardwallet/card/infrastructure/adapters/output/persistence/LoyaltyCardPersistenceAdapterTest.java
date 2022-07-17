@@ -116,12 +116,8 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
         Long idOfCardUnderTest = 1L;
         List<ActivityEntity> activitiesOfCardBeforeUpdate = activityRepository.findByOwner(idOfCardUnderTest);
 
-        WithdrawalActivity newActivity = WithdrawalActivity.builder()
-                .id(null)
-                .timestamp(LocalDateTime.now())
-                .points(Points.of(20L))
-                .ownerCardId(LoyaltyCardId.of(idOfCardUnderTest))
-                .build();
+        WithdrawalActivity newActivity = WithdrawalActivity
+                .of(null, LocalDateTime.now(), LoyaltyCardId.of(idOfCardUnderTest), Points.of(20L));
 
         LoyaltyCard loyaltyCardUnderTest = LoyaltyCard.withId(
                 LoyaltyCardId.of(idOfCardUnderTest),

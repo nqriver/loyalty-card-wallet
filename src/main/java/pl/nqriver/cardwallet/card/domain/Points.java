@@ -49,7 +49,7 @@ public class Points {
         return new Points(a.amount.add(b.amount));
     }
 
-    public Points minus(Points points){
+    public Points subtract(Points points){
         return new Points(this.amount.subtract(points.amount));
     }
 
