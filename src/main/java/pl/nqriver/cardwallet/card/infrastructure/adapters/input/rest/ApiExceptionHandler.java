@@ -60,8 +60,8 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleAnyException(Exception exception) {
-        String rootMsg = exception.getMessage();
-        final ApiErrorResponse errorResponse = ApiErrorResponse.withSimpleMessage(HttpStatus.CONFLICT, rootMsg);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        final ApiErrorResponse errorResponse = ApiErrorResponse
+                .withSimpleMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

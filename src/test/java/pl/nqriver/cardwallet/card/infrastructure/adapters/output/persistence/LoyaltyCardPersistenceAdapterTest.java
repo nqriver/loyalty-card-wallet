@@ -114,7 +114,9 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
 
         // given
         Long idOfCardUnderTest = 1L;
-        List<ActivityEntity> activitiesOfCardBeforeUpdate = activityRepository.findByOwner(idOfCardUnderTest);
+        LoyaltyCardEntity cardUnderTest = loyaltyCardRepository.findById(idOfCardUnderTest).orElseThrow();
+
+        List<ActivityEntity> activitiesOfCardBeforeUpdate = activityRepository.findAllByOwner(cardUnderTest);
 
         WithdrawalActivity newActivity = WithdrawalActivity
                 .of(null, LocalDateTime.now(), LoyaltyCardId.of(idOfCardUnderTest), Points.of(20L));
@@ -136,7 +138,7 @@ class LoyaltyCardPersistenceAdapterTest extends AbstractPersistenceIntegrationTe
         // then
 
 
-        List<ActivityEntity> activitiesOfCardAfterUpdate = activityRepository.findByOwner(idOfCardUnderTest);
+        List<ActivityEntity> activitiesOfCardAfterUpdate = activityRepository.findAllByOwner(cardUnderTest);
         assertThat(activitiesOfCardAfterUpdate.size()).isEqualTo(activitiesOfCardBeforeUpdate.size() + 1);
 
         var addedActivity = new ArrayList<>(CollectionUtils.removeAll(activitiesOfCardAfterUpdate, activitiesOfCardBeforeUpdate))

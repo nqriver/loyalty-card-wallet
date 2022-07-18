@@ -22,8 +22,9 @@ public class ActivityEntity {
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
-    @Column(name = "owner_card_id")
-    private Long ownerLoyaltyCardId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_card_id", referencedColumnName = "id")
+    private LoyaltyCardEntity ownerLoyaltyCard;
 
     @Column(name = "source_card_id")
     private Long sourceLoyaltyCardId;
@@ -48,7 +49,7 @@ public class ActivityEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(timestamp, ownerLoyaltyCardId, sourceLoyaltyCardId, targetLoyaltyCardId);
+        return Objects.hash(timestamp, ownerLoyaltyCard.getId(), sourceLoyaltyCardId, targetLoyaltyCardId);
     }
 }
 

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,88 +13,72 @@ import java.util.List;
 @Repository
 public interface ActivityRepository extends JpaRepository<ActivityEntity, Long> {
 
-    @Query(
-            "select a from ActivityEntity a " +
-                    "where a.ownerLoyaltyCardId = :ownerCardId " +
-                    "and a.timestamp >= :since " +
-                    "and a.timestamp <= :until"
-    )
-    List<ActivityEntity> findByOwnerBetweenDates(
-            @Param("ownerCardId") Long ownerCardId,
-            @Param("since") LocalDateTime since,
-            @Param("until") LocalDateTime until
-    );
+    List<ActivityEntity> findByOwnerLoyaltyCardAndTimestampIsBetween(LoyaltyCardEntity ownerCard,
+                                                                       LocalDateTime since,
+                                                                       LocalDateTime until);
 
-    @Query(
-            "select a from ActivityEntity a " +
-                    "where a.ownerLoyaltyCardId = :ownerCardId"
-    )
-    List<ActivityEntity> findByOwner(
-            @Param("ownerCardId") Long ownerCardId
-    );
+    List<ActivityEntity> findByOwnerLoyaltyCard(LoyaltyCardEntity ownerCardId);
 
 
-    @Query(
-            "select sum(ae.points) from ActivityEntity ae " +
-                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
-                    "and ae.isIncoming = true " +
-                    "and ae.timestamp < :until"
-    )
-    Long getPointsDepositBalanceUntil(
-            @Param("loyaltyCardId") Long loyaltyCardId,
-            @Param("until") LocalDateTime until
-    );
+    default List<ActivityEntity> findByOwnerBetweenDates(
+            LoyaltyCardEntity ownerCard,
+            LocalDateTime since,
+            LocalDateTime until
+    ) {
+        return findByOwnerLoyaltyCardAndTimestampIsBetween(ownerCard, since, until);
+    }
+
+
+    default List<ActivityEntity> findAllByOwner(LoyaltyCardEntity ownerCardId) {
+        return findByOwnerLoyaltyCard(ownerCardId);
+    }
+
 
     @Query(
             "select sum(ae.points) from ActivityEntity ae " +
-                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
-                    "and ae.isIncoming = false " +
-                    "and ae.timestamp < :until"
-    )
-    Long getPointsWithdrawalBalanceUntil(
-            @Param("loyaltyCardId") Long loyaltyCardId,
-            @Param("until") LocalDateTime until
-    );
-
-    @Query(
-            "select sum(ae.points) from ActivityEntity ae " +
-                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
+                    "where ae.ownerLoyaltyCard = :ownerCard " +
                     "and ae.isIncoming = false " +
                     "and ae.timestamp not between :since and :until"
     )
     Long getPointsWithdrawalBalanceExcludingPeriodOf(
-            @Param("loyaltyCardId") Long loyaltyCardId,
+            @Param("ownerCard") LoyaltyCardEntity ownerCard,
             @Param("since") LocalDateTime since,
             @Param("until") LocalDateTime until
     );
 
+
+
     @Query(
             "select sum(ae.points) from ActivityEntity ae " +
-                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
+                    "where ae.ownerLoyaltyCard = :ownerCard " +
                     "and ae.isIncoming = true " +
                     "and ae.timestamp not between :since and :until"
     )
     Long getPointsDepositBalanceExcludingPeriodOf(
-            @Param("loyaltyCardId") Long loyaltyCardId,
+            @Param("ownerCard") LoyaltyCardEntity ownerCard,
             @Param("since") LocalDateTime since,
             @Param("until") LocalDateTime until
     );
 
-    @Query(
-            "select sum(ae.points) from ActivityEntity ae " +
-                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
-                    "and ae.isIncoming = false "
-    )
-    Long getPointsWithdrawalBalance(
-            @Param("loyaltyCardId") Long loyaltyCardId
-    );
+
 
     @Query(
             "select sum(ae.points) from ActivityEntity ae " +
-                    "where ae.ownerLoyaltyCardId = :loyaltyCardId " +
+                    "where ae.ownerLoyaltyCard = :ownerCard " +
+                    "and ae.isIncoming = false "
+    )
+    Long getPointsWithdrawalBalance(
+            @Param("ownerCard") LoyaltyCardEntity ownerCard
+    );
+
+
+
+    @Query(
+            "select sum(ae.points) from ActivityEntity ae " +
+                    "where ae.ownerLoyaltyCard = :ownerCard " +
                     "and ae.isIncoming = true "
     )
     Long getPointsDepositBalance(
-            @Param("loyaltyCardId") Long loyaltyCardId
+            @Param("ownerCard") LoyaltyCardEntity ownerCard
     );
 }

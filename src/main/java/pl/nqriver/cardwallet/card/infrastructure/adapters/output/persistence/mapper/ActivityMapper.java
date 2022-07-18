@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.nqriver.cardwallet.card.domain.*;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
 
 import java.util.List;
 
@@ -25,16 +26,27 @@ public class ActivityMapper {
     private Activity mapActivityEntityToDomainObject(ActivityEntity activityEntity) {
         return activityFactory.getInstance(activityEntity);
     }
+//
+//    public ActivityEntity mapDomainObjectToActivityEntity(Activity activity) {
+//        return new ActivityEntity(
+//                activity.getId() == null ? null : activity.getId().getValue(),
+//                activity.getTimestamp(),
+//                cardMapper.mapToEntity()
+//                activity.getSourceCardId() == null ? null : activity.getSourceCardId().getValue(),
+//                activity.getTargetCardId() == null ? null : activity.getTargetCardId().getValue(),
+//                activity.getPoints().getAmount().longValue(),
+//                activity.getTypeOfActivity().equals(ActivityType.INCOMING)
+//        );
+//    }
 
-    public ActivityEntity mapDomainObjectToActivityEntity(Activity activity) {
+    public ActivityEntity mapToEntityWithOwner(LoyaltyCardEntity ownerOfActivities, Activity activity) {
         return new ActivityEntity(
                 activity.getId() == null ? null : activity.getId().getValue(),
                 activity.getTimestamp(),
-                activity.getOwnerCardId().getValue(),
+                ownerOfActivities,
                 activity.getSourceCardId() == null ? null : activity.getSourceCardId().getValue(),
                 activity.getTargetCardId() == null ? null : activity.getTargetCardId().getValue(),
                 activity.getPoints().getAmount().longValue(),
-                activity.getTypeOfActivity().equals(ActivityType.INCOMING)
-        );
+                activity.getTypeOfActivity().equals(ActivityType.INCOMING));
     }
 }

@@ -21,7 +21,7 @@ public class ActivityFactory {
         return DepositActivity.of(
                 ActivityId.of(activityEntity.getId()),
                 activityEntity.getTimestamp(),
-                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()),
+                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCard().getId()),
                 Points.of(activityEntity.getPoints())
         );
     }
@@ -31,7 +31,7 @@ public class ActivityFactory {
                 ActivityId.of(activityEntity.getId()),
                 activityEntity.getTimestamp(),
                 Points.of(activityEntity.getPoints()),
-                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()),
+                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCard().getId()),
                 LoyaltyCardId.of(activityEntity.getTargetLoyaltyCardId()),
                 LoyaltyCardId.of(activityEntity.getSourceLoyaltyCardId())
         );
@@ -41,7 +41,7 @@ public class ActivityFactory {
         return WithdrawalActivity.of(
                 ActivityId.of(activityEntity.getId()),
                 activityEntity.getTimestamp(),
-                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCardId()),
+                LoyaltyCardId.of(activityEntity.getOwnerLoyaltyCard().getId()),
                 Points.of(activityEntity.getPoints())
         );
     }

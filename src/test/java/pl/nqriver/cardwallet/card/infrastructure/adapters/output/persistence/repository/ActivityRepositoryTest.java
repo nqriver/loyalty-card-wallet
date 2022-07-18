@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.AbstractPersistenceIntegrationTest;
 import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.ActivityEntity;
+import pl.nqriver.cardwallet.card.infrastructure.adapters.output.persistence.entity.LoyaltyCardEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,15 +35,16 @@ class ActivityRepositoryTest extends AbstractPersistenceIntegrationTest {
         LocalDateTime until = LocalDateTime.now().plusYears(6);
 
         Long idOfCardUnderTest = 1L;
+        LoyaltyCardEntity cardUnderTest = loyaltyCardRepository.findById(idOfCardUnderTest).orElseThrow();
 
         // when
-        List<ActivityEntity> retrievedActivities = activityRepository.findByOwnerBetweenDates(idOfCardUnderTest, since, until);
+        List<ActivityEntity> retrievedActivities = activityRepository.findByOwnerBetweenDates(cardUnderTest, since, until);
 
         // then
 
         assertThat(retrievedActivities)
                 .hasSize(5)
-                .allSatisfy(e -> e.getOwnerLoyaltyCardId().equals(idOfCardUnderTest))
+                .allSatisfy(e -> idOfCardUnderTest.equals(e.getOwnerLoyaltyCard().getId()))
                 .allSatisfy(e -> e.getTimestamp().isBefore(until))
                 .allSatisfy(e -> e.getTimestamp().isAfter(since));
     }
@@ -63,9 +65,10 @@ class ActivityRepositoryTest extends AbstractPersistenceIntegrationTest {
     void shouldRetrieveDepositBalanceOfLoyaltyCard() {
         // given
         Long idOfCardUnderTest = 1L;
+        LoyaltyCardEntity cardUnderTest = loyaltyCardRepository.findById(idOfCardUnderTest).orElseThrow();
 
         // when
-        Long pointsDepositBalance = activityRepository.getPointsDepositBalance(idOfCardUnderTest);
+        Long pointsDepositBalance = activityRepository.getPointsDepositBalance(cardUnderTest);
 
         // then
         assertThat(pointsDepositBalance).isEqualTo(170L);
@@ -75,36 +78,12 @@ class ActivityRepositoryTest extends AbstractPersistenceIntegrationTest {
     void shouldRetrieveWithdrawalBalanceOfLoyaltyCard() {
         // given
         Long idOfCardUnderTest = 1L;
+        LoyaltyCardEntity cardUnderTest = loyaltyCardRepository.findById(idOfCardUnderTest).orElseThrow();
 
         // when
-        Long pointsDepositBalance = activityRepository.getPointsWithdrawalBalance(idOfCardUnderTest);
+        Long pointsDepositBalance = activityRepository.getPointsWithdrawalBalance(cardUnderTest);
 
         // then
         assertThat(pointsDepositBalance).isEqualTo(30L);
-    }
-
-    @Test
-    void shouldRetrieveDepositBalanceOfLoyaltyCardUntil() {
-        // given
-        Long idOfCardUnderTest = 1L;
-        LocalDateTime untilDate = LocalDateTime.now().plusYears(2);
-
-        // when
-        Long pointsDepositBalance = activityRepository.getPointsDepositBalanceUntil(idOfCardUnderTest, untilDate);
-
-        // then
-        assertThat(pointsDepositBalance).isEqualTo(120L);
-    }
-
-    @Test
-    void shouldRetrieveWithdrawalBalanceOfLoyaltyCardUntil() {
-        // given
-        Long idOfCardUnderTest = 2L;
-        LocalDateTime untilDate = LocalDateTime.now().plusYears(2);
-        // when
-        Long pointsDepositBalance = activityRepository.getPointsWithdrawalBalanceUntil(idOfCardUnderTest, untilDate);
-
-        // then
-        assertThat(pointsDepositBalance).isEqualTo(20L);
     }
 }

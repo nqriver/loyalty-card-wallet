@@ -41,7 +41,7 @@ class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActiv
                 loyaltyCardRepository.findById(loyaltyCardId)
                         .orElseThrow(() -> new ResourceNotFoundException(String.format(CARD_NOT_FOUND_FORMAT, loyaltyCardId)));
         log.debug("Persistence adapter: Fetching all activities of loyalty card with id: {}", loyaltyCardId);
-        List<ActivityEntity> activities = activityRepository.findByOwner(loyaltyCardId);
+        List<ActivityEntity> activities = activityRepository.findAllByOwner(loyaltyCardEntity);
 
         return loyaltyCardMapper.mapToDomainWithAllActivities(loyaltyCardEntity, activities);
     }
@@ -56,15 +56,16 @@ class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActiv
 
         log.debug("Persistence adapter: Fetching activities between dates {} - {} of loyalty card with id: {}",
                 since, until, loyaltyCardId);
-        List<ActivityEntity> activities = activityRepository.findByOwnerBetweenDates(loyaltyCardId, since, until);
+        List<ActivityEntity> activities = activityRepository.
+                findByOwnerBetweenDates(loyaltyCardEntity, since, until);
 
         log.debug("Persistence adapter: Getting deposit and withdrawal balance between dates {} - {} of loyalty card with id: {}",
                 since, until, loyaltyCardId);
 
         Long depositedPointsOutOfWindow = getValueElseZero
-                (activityRepository.getPointsDepositBalanceExcludingPeriodOf(loyaltyCardId, since, until));
+                (activityRepository.getPointsDepositBalanceExcludingPeriodOf(loyaltyCardEntity, since, until));
         Long withdrawnPointsOutOfWindow = getValueElseZero
-                (activityRepository.getPointsWithdrawalBalanceExcludingPeriodOf(loyaltyCardId, since, until));
+                (activityRepository.getPointsWithdrawalBalanceExcludingPeriodOf(loyaltyCardEntity, since, until));
 
         return loyaltyCardMapper.mapToDomain(loyaltyCardEntity,
                 activities,
@@ -82,9 +83,9 @@ class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActiv
 
         log.debug("Persistence adapter: Getting total deposit and withdrawal balance of loyalty card with id: {}", cardId);
         Long allDepositedPoints = getValueElseZero
-                (activityRepository.getPointsDepositBalance(cardId));
+                (activityRepository.getPointsDepositBalance(entity));
         Long allWithdrawnPoints = getValueElseZero(
-                activityRepository.getPointsWithdrawalBalance(cardId));
+                activityRepository.getPointsWithdrawalBalance(entity));
 
         return loyaltyCardMapper.mapToDomain(
                 entity,
@@ -100,11 +101,15 @@ class LoyaltyCardPersistenceAdapter implements LoyaltyCardPort, LoyaltyCardActiv
 
     @Override
     public void updateActivities(LoyaltyCard loyaltyCard) {
+        Long cardId = loyaltyCard.getId().orElseThrow().getValue();
+        LoyaltyCardEntity ownerOfActivities = loyaltyCardRepository.findById(cardId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(CARD_NOT_FOUND_FORMAT, cardId)));
+
         loyaltyCard.getActivityWindow()
                 .getActivities()
                 .stream()
                 .filter(activity -> Objects.isNull(activity.getId()))
-                .map(activityMapper::mapDomainObjectToActivityEntity)
+                .map(activity -> activityMapper.mapToEntityWithOwner(ownerOfActivities, activity))
                 .forEach(activityRepository::save);
         log.info("Persistence Adapter: Updating activities of loyalty card with id: {}", loyaltyCard.getId().get());
 
